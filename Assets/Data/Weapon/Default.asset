@@ -1,0 +1,44 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7d24d19e78f33db43b35aa8657157d2b, type: 3}
+  m_Name: Default
+  m_EditorClassIdentifier: Assembly-CSharp::WeaponData
+  damage: 10
+  fireRate: 0.12
+  range: 200
+  heatAddAmount: 5
+  heatDecayAmount: 10
+  maxHeat: 100
+  heatDecayRate: 1
+  postOverheatDelay: 2
+  recoil:
+    recoilX: 2
+    recoilY: 0.4
+    recoilZ: 0.1
+    kick: 1
+  aim:
+    aimSens: 0.125
+    aimSway: 0.3
+    aimSpread: 0.1
+    aimRecoil: 0.2
+    aimReturnSpeed: 25
+    aimRate: 0.1
+  sound:
+    fire: {fileID: 8300000, guid: e87065b8e0f223141a8f9b710d1e945c, type: 3}
+    overheat: {fileID: 8300000, guid: be7ce9bf47206ed44b5df55fc10216a7, type: 3}
+  weapon:
+    recoilReturnSpeed: 15
+    recoilSnappiness: 20
+    aimSwitchPosSpeed: 20
+    aimSwitchRotSpeed: 20
+    swaySpringStrength: 100
+    swayDamping: 10

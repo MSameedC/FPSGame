@@ -1,0 +1,9 @@
+<ui:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" noNamespaceSchemaLocation="../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <Style src="project://database/Assets/UI/Style/GameMenuStyle.uss?fileID=7433441132597879392&amp;guid=0065aae74f72b73419b49078288b8585&amp;type=3#GameMenuStyle" />
+    <ui:VisualElement name="root" style="flex-grow: 1; align-self: auto; align-content: auto; align-items: auto;">
+        <ui:Label text="W: 0" name="wave-label" class="label text background" style="-unity-text-align: middle-center; height: 40px; width: 120px; font-size: 20px; margin-top: 0; margin-right: 0; margin-bottom: 0; margin-left: 0; padding-top: 0; padding-right: 0; padding-bottom: 0; padding-left: 0; border-top-right-radius: 0; border-top-left-radius: 0;" />
+        <ui:VisualElement name="data" class="background" style="width: auto; height: 40px; justify-content: flex-start; align-self: flex-start; position: absolute; align-items: flex-start; flex-direction: row; padding-left: 10px; padding-right: 10px; border-top-left-radius: 0; border-top-right-radius: 0; border-bottom-left-radius: 0;">
+            <ui:Label text="S: 0" name="score-label" class="label text" style="align-items: flex-start; justify-content: center; align-self: flex-start;" />
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>
