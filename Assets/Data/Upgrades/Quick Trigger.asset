@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5830442f71dc60e4a94240436564613c, type: 3}
+  m_Name: Quick Trigger
+  m_EditorClassIdentifier: Assembly-CSharp::WeaponUpgrade
+  upgradeName: Quick Trigger
+  description: Increased shoot speed. -0.01 Fire rate
+  damageAdd: 0
+  damageMultiply: 1
+  fireRateAdd: -0.01
+  fireRateMultiply: 1
+  maxHeatAdd: 0
+  maxHeatMultiply: 1
+  heatDecayAdd: 0
+  heatDecayMultiply: 1
+  accuracyPenalty: 0
