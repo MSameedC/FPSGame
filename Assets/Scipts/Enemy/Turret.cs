@@ -1,7 +1,7 @@
 using System.Collections;
 using UnityEngine;
 
-public class Turrent : EnemyBase
+public class Turret : EnemyBase
 {
     private float bufferTimer = 0;
     private float patrolTimer = 0;
@@ -150,7 +150,7 @@ public class Turrent : EnemyBase
         yield return null;
     }
 
-    protected override void OnDeathEnter()
+    public override void OnDeathEnter()
     {
         
     }

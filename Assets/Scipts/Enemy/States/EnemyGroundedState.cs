@@ -1,7 +1,9 @@
-public class PatrolState : EnemyState
+public class PatrolState : BaseState
 {
     public PatrolState(EnemyBase enemy) : base(enemy) { }
 
+    private EnemyBase enemy => (EnemyBase)entity;
+    
     public override void Update(float delta)
     {
         if (enemy.IsInSight())
