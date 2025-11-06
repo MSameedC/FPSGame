@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-public class PlayerController : MonoBehaviour, IPlayerState
+public class PlayerController : MonoBehaviour, IMoveable
 {
     [Header("Movement")]
     [SerializeField] private float walkSpeed = 10f;
@@ -37,16 +37,22 @@ public class PlayerController : MonoBehaviour, IPlayerState
     [SerializeField] private LayerMask wallMask;
 
     [Header("Ground Check")]
+    [SerializeField] private Transform groundCheck;
+    [SerializeField] private float groundCheckRadius = 0.2f;
     [SerializeField] private float groundCheckDistance = 0.3f;
     [SerializeField] private LayerMask groundMask;
+    
+    [Header("Enemy Check")]
+    [SerializeField] private float detectRadius = 5f;
+    [SerializeField] private LayerMask enemyLayer;
 
     // Timers
-    private float slamTimer = 0;
-    private float jumpTimer = 0;
-    private float coyoteTimer = 0;
-    private float currentSpeed = 0;
-    private float jumpBufferTimer = 0;
-    private float dashCooldownTimer = 0;
+    private float slamTimer;
+    private float jumpTimer;
+    private float coyoteTimer;
+    private float currentSpeed;
+    private float jumpBufferTimer;
+    private float dashCooldownTimer;
 
     // Float
     private float currentSmoothSpeed;
@@ -61,16 +67,18 @@ public class PlayerController : MonoBehaviour, IPlayerState
     private Vector3 finalVelocity;
     private Vector3 lastWallNormal;
     private Vector3 wallJumpVelocity;
-
-    private bool jumpConsumed;
+    
+    private bool isSlaming;
+    
+    // Collider
+    private Collider[] enemyCollider;
 
     // Ground info
     public bool IsGrounded { get; private set; }
-    public Vector3 GroundNormal { get; private set; }
+    private Vector3 GroundNormal;
 
     private float velocityY { get; set; }
     public bool IsDashing { get; set; }
-    public bool IsSlaming { get; private set; }
 
     private PlayerAudio PlayerAudio { get; set; }
     private PlayerStamina PlayerStamina { get; set; }
@@ -78,7 +86,6 @@ public class PlayerController : MonoBehaviour, IPlayerState
     // Components
     private PlayerState currentState;
     private CharacterController CC;
-    private IInputProvider input;
     private Transform Player;
     private Camera Cam;
 
@@ -87,18 +94,12 @@ public class PlayerController : MonoBehaviour, IPlayerState
     public event Action OnLanded;
     public event Action OnSlamImpact;
 
-    // Input flags (auto-reset after use)
-    private bool jumpPressedThisFrame;
-    private bool dashPressedThisFrame;
-    private bool slamPressedThisFrame;
-
     // ---
 
     #region Unity
 
     private void Awake()
     {
-        input = GetComponent<IInputProvider>();
         CC = GetComponent<CharacterController>();
         PlayerAudio = GetComponent<PlayerAudio>();
         PlayerStamina = GetComponent<PlayerStamina>();
@@ -110,9 +111,9 @@ public class PlayerController : MonoBehaviour, IPlayerState
         Cam = Camera.main;
 
         // Subscribe to input events
-        input.OnJumpPressed += OnJumpInput;
-        input.OnDashPressed += OnDashInput;
-        input.OnSlamPressed += OnSlamInput;
+        InputManager.OnJumpPressed += OnJumpInput;
+        InputManager.OnDashPressed += OnDashInput;
+        InputManager.OnSlamPressed += OnSlamInput;
 
         SetState(new GroundedState(this));
     }
@@ -120,12 +121,9 @@ public class PlayerController : MonoBehaviour, IPlayerState
     private void OnDestroy()
     {
         // Unsubscribe from events
-        if (input != null)
-        {
-            input.OnJumpPressed -= OnJumpInput;
-            input.OnDashPressed -= OnDashInput;
-            input.OnSlamPressed -= OnSlamInput;
-        }
+        InputManager.OnJumpPressed -= OnJumpInput;
+        InputManager.OnDashPressed -= OnDashInput;
+        InputManager.OnSlamPressed -= OnSlamInput;
     }
 
     private void Update()
@@ -146,9 +144,6 @@ public class PlayerController : MonoBehaviour, IPlayerState
 
         #endregion
 
-        // Process input flags
-        ProcessInputs();
-
         // State update
         currentState?.Update(delta);
 
@@ -161,7 +156,7 @@ public class PlayerController : MonoBehaviour, IPlayerState
             wallJumpVelocity = Vector3.zero;
             coyoteTimer = coyoteTime;
 
-            if (input.MoveInput != Vector2.zero)
+            if (InputManager.MoveInput != Vector2.zero)
                 PlayerAudio.PlayFootStep(delta);
             else
                 PlayerAudio.ResetFootStep();
@@ -173,7 +168,19 @@ public class PlayerController : MonoBehaviour, IPlayerState
         float delta = Time.deltaTime;
 
         currentState?.LateUpdate(delta);
-        Movement(delta);
+        
+        // Safety check for NaN position
+        if (float.IsNaN(transform.position.x) || float.IsNaN(transform.position.y) || float.IsNaN(transform.position.z))
+        {
+            Debug.LogError("Player position corrupted! Resetting...");
+            transform.position = Vector3.up * 2f; // Reset above ground
+            finalVelocity = Vector3.zero;
+            inputVelocity = Vector3.zero;
+            wallJumpVelocity = Vector3.zero;
+            velocityY = 0f;
+        }
+        
+        MoveTo(InputManager.MoveInput, delta);
     }
 
     #endregion
@@ -187,73 +194,11 @@ public class PlayerController : MonoBehaviour, IPlayerState
 
     #region  Input event handlers
 
-    private void OnJumpInput() => jumpPressedThisFrame = true;
-    private void OnDashInput() => dashPressedThisFrame = true;
-    private void OnSlamInput() => slamPressedThisFrame = true;
-
-    private void ProcessInputs()
-    {
-        // Jump buffer from input events
-        if (jumpPressedThisFrame)
-        {
-            jumpBufferTimer = jumpBufferTime;
-            jumpPressedThisFrame = false;
-        }
-
-        // Let the current state handle dash/slam inputs
-        if (dashPressedThisFrame)
-        {
-            currentState?.OnDashInput();
-            dashPressedThisFrame = false;
-        }
-
-        if (slamPressedThisFrame)
-        {
-            currentState?.OnSlamInput();
-            slamPressedThisFrame = false;
-        }
-    }
+    private void OnJumpInput() => jumpBufferTimer = jumpBufferTime;
+    private void OnDashInput() => currentState?.OnDashInput();
+    private void OnSlamInput() => currentState?.OnSlamInput();
 
     #endregion
-
-    private void Movement(float delta)
-    {
-        if (IsDashing || IsSlaming)
-        {
-            Vector3 finalMove = dashVelocity + Vector3.up * velocityY;
-            CC.Move(finalMove * delta);
-            return;
-        }
-
-        Vector2 moveInput = input.MoveInput;
-        float targetSpeed = moveInput.magnitude > 0 ? walkSpeed : 0;
-        currentSpeed = Mathf.SmoothDamp(currentSpeed, targetSpeed, ref currentSmoothSpeed, delta * moveSmoothness);
-
-        Vector3 moveDirection = Player.forward * moveInput.y + Player.right * moveInput.x;
-        targetDragSnappiness = Mathf.Lerp(targetDragSnappiness, IsGrounded ? groundDrag : airDrag, delta * dragSnappiness);
-
-        Vector3 targetPosition = moveDirection * currentSpeed;
-        inputVelocity = Vector3.Lerp(inputVelocity, targetPosition, targetDragSnappiness);
-
-        // Wall jump handling
-        if (wallJumpVelocity != Vector3.zero)
-        {
-            wallJumpVelocity = Vector3.Lerp(wallJumpVelocity, Vector3.zero, delta * wallJumpDecay);
-
-            float inputStrength = moveInput.magnitude;
-            if (inputStrength > 0.1f)
-            {
-                wallJumpVelocity = Vector3.Lerp(wallJumpVelocity, inputVelocity, targetDragSnappiness);
-            }
-        }
-
-        // ALWAYS combine velocities and move
-        finalVelocity = inputVelocity + wallJumpVelocity + Vector3.up * velocityY;
-        CC.Move(finalVelocity * delta);
-
-        float rawSpeed = new Vector3(inputVelocity.x, 0, inputVelocity.z).magnitude;
-        MoveMagnitude = Mathf.InverseLerp(0f, dashSpeed, rawSpeed);
-    }
 
     private void ApplyGravity(float delta)
     {
@@ -268,6 +213,66 @@ public class PlayerController : MonoBehaviour, IPlayerState
         float gravityMultiplier = ((velocityY < 0.1f) ? GravityData.fallStrength : 1f) * GravityData.gravity;
         velocityY += gravityMultiplier * delta;
     }
+    
+    public void MoveTo(Vector3 input, float delta)
+    {
+        if (IsDashing || isSlaming)
+        {
+            Vector3 finalMove = dashVelocity + Vector3.up * velocityY;
+            CC.Move(finalMove * delta);
+            return;
+        }
+
+        Vector2 moveInput = input;
+        float targetSpeed = moveInput.magnitude > 0 ? walkSpeed : 0;
+        currentSpeed = Mathf.SmoothDamp(currentSpeed, targetSpeed, ref currentSmoothSpeed, delta * moveSmoothness);
+
+        Vector3 moveDirection = Player.forward * moveInput.y + Player.right * moveInput.x;
+        targetDragSnappiness = Mathf.Lerp(targetDragSnappiness, IsGrounded ? groundDrag : airDrag, delta * dragSnappiness);
+
+        Vector3 targetPosition = moveDirection * currentSpeed;
+        inputVelocity = Vector3.Lerp(inputVelocity, targetPosition, targetDragSnappiness);
+
+        // FIXED: Wall jump handling with NaN protection
+        if (wallJumpVelocity != Vector3.zero)
+        {
+            wallJumpVelocity = Vector3.Lerp(wallJumpVelocity, Vector3.zero, delta * wallJumpDecay);
+
+            float inputStrength = moveInput.magnitude;
+            if (inputStrength > 0.1f)
+            {
+                wallJumpVelocity = Vector3.Lerp(wallJumpVelocity, inputVelocity, targetDragSnappiness);
+            }
+
+            // CRITICAL FIX: Check if wallJumpVelocity is effectively zero or NaN
+            if (wallJumpVelocity.sqrMagnitude < 0.001f || 
+                float.IsNaN(wallJumpVelocity.x) || 
+                float.IsNaN(wallJumpVelocity.y) || 
+                float.IsNaN(wallJumpVelocity.z))
+            {
+                wallJumpVelocity = Vector3.zero;
+            }
+        }
+
+        // ALWAYS combine velocities and move
+        finalVelocity = inputVelocity + wallJumpVelocity + Vector3.up * velocityY;
+
+        // CRITICAL FIX: NaN check before moving
+        if (float.IsNaN(finalVelocity.x) || float.IsNaN(finalVelocity.y) || float.IsNaN(finalVelocity.z))
+        {
+            Debug.LogError("NaN detected in finalVelocity! Resetting velocities.");
+            finalVelocity = Vector3.zero;
+            inputVelocity = Vector3.zero;
+            wallJumpVelocity = Vector3.zero;
+            velocityY = 0f;
+        }
+
+        CC.Move(finalVelocity * delta);
+        
+        // Calculate Magnitude
+        float rawSpeed = new Vector3(inputVelocity.x, 0, inputVelocity.z).magnitude;
+        MoveMagnitude = Mathf.InverseLerp(0f, dashSpeed, rawSpeed);
+    }
 
     public void PerformJump()
     {
@@ -276,12 +281,6 @@ public class PlayerController : MonoBehaviour, IPlayerState
         coyoteTimer = 0f; // Consume coyote time
         OnJumped?.Invoke();
     }
-
-    public void OnLand()
-    {
-        OnLanded?.Invoke();
-    }
-
     public void PerformWallJump()
     {
         velocityY = Mathf.Sqrt(-GravityData.gravity * wallJumpVerticalForce);
@@ -291,26 +290,57 @@ public class PlayerController : MonoBehaviour, IPlayerState
         jumpTimer = jumpCooldown;
         OnJumped?.Invoke();
     }
-
+    
+    public void OnLand() => OnLanded?.Invoke();
+    private static void HitStop() => VFXManager.Instance.TriggerHitStop(0.15f);
     private void TakeStamina(int amount) => PlayerStamina.TakeStamina(amount);
 
     public void ApplySlamStart()
     {
+        // Remove any Y velocity to avoid diagonal slam
         velocityY = 0;
+        // Perform Slam
         velocityY += -slamForce;
+        // Reset Cooldown
         slamTimer = slamCooldown;
+        // Update stamina
         TakeStamina(slamValue);
-        IsSlaming = true;
+        isSlaming = true;
     }
-
     public void ApplySlamImpact()
     {
-        IsSlaming = false;
+        // Give enemy damage
+        if (EnemyInRange())
+        {
+            PerformSlamDamage(50);
+            HitStop();
+        }
+        // Effects
+        isSlaming = false;
         OnLanded?.Invoke();
         OnSlamImpact?.Invoke();
         PlayerAudio.PlaySlamSound();
     }
-
+    private void PerformSlamDamage(int amount)
+    {
+        Collider[] hitColliders = enemyCollider;
+    
+        foreach (Collider collider in hitColliders)
+        {
+            EnemyBase enemy = collider.GetComponent<EnemyBase>();
+            
+            if (enemy)
+            {
+                // Calculate knockback direction (away from player)
+                Vector3 knockbackDir =  EntityHelper.GetKnockbackDirection(enemy.transform.position, transform.position, 0.4f);
+                // Apply damage and knockback
+                enemy.TakeDamage(amount);
+                enemy.ApplyKnockback(knockbackDir, 40);
+            }
+        }
+            
+        
+    }
     public void ApplyDashImpulse(Vector3 dir)
     {
         dashCooldownTimer = dashCooldown;
@@ -318,31 +348,27 @@ public class PlayerController : MonoBehaviour, IPlayerState
         TakeStamina(dashValue);
         PlayerAudio.PlayDashSound();
     }
-
+    
     public Vector3 CaptureDirection()
     {
-        Vector2 moveInput = input.MoveInput;
+        Vector2 moveInput = InputManager.MoveInput;
         return moveInput != Vector2.zero ? (Cam.transform.forward * moveInput.y + Cam.transform.right * moveInput.x).normalized : Cam.transform.forward.normalized;
     }
-
     private void UpdateGrounded()
     {
-        Vector3 origin = transform.position + Vector3.up * 0.1f;
-
-        if (Physics.SphereCast(origin, CC.radius * 0.9f, Vector3.down, out RaycastHit hit, groundCheckDistance, groundMask))
-        {
-            IsGrounded = true;
-            GroundNormal = hit.normal;
-        }
-        else
-        {
-            IsGrounded = false;
-            GroundNormal = Vector3.up;
-        }
+        IsGrounded = EntityHelper.IsGrounded(groundCheck.position, groundCheckRadius, out RaycastHit hit, groundCheckDistance, groundMask);
     }
 
-    #region Bools
+    // private void OnDrawGizmos()
+    // {
+    //     // Grounded sphere
+    //     Gizmos.DrawSphere(groundCheck.position + (Vector3.down * groundCheckDistance), groundCheckRadius);
+    //     // Enemy detect sphere
+    //     Gizmos.DrawWireSphere(groundCheck.position, detectRadius);
+    // }
 
+    #region Bools
+    // Jump
     private bool CheckWall(out Vector3 wallNormal)
     {
         Vector3 origin = transform.position + Vector3.up * 1f;
@@ -356,33 +382,24 @@ public class PlayerController : MonoBehaviour, IPlayerState
         wallNormal = Vector3.zero;
         return false;
     }
-
     public bool CanWallJump()
     {
         if (IsGrounded)
         {
-            jumpConsumed = false;
             return false;
         }
 
         if (CheckWall(out Vector3 normal))
         {
             lastWallNormal = normal;
-            if (input.IsJumping && !jumpConsumed && jumpTimer <= 0f)
+            if (jumpBufferTimer > 0f)
             {
-                jumpConsumed = true;
                 return true;
             }
         }
-
-        if (!CheckWall(out _) || !input.IsJumping)
-        {
-            jumpConsumed = false;
-        }
-
+        
         return false;
     }
-
     public bool CanJump()
     {
         if (jumpBufferTimer > 0f && coyoteTimer > 0f && jumpTimer <= 0f)
@@ -392,8 +409,19 @@ public class PlayerController : MonoBehaviour, IPlayerState
         }
         return false;
     }
+    
+    // Enemy
+    public bool EnemyInRange()
+    {
+        enemyCollider = Physics.OverlapSphere(groundCheck.position, detectRadius, enemyLayer);
+        
+        if (enemyCollider.Length > 0) return true;
+        return false;
+    }
 
+    // Movement
     public bool IsMoving() => MoveMagnitude > 0.01f;
+    // Special
     public bool CanSlam() => !IsGrounded && slamTimer <= 0 && PlayerStamina.CurrentStamina >= slamValue;
     public bool CanDash() => dashCooldownTimer <= 0 && IsMoving() && PlayerStamina.CurrentStamina >= dashValue;
 

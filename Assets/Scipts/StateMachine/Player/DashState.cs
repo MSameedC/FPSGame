@@ -4,6 +4,7 @@ public class DashState : PlayerState
 {
     public DashState(PlayerController player) : base(player) { }
 
+    private PlayerController player => (PlayerController)entity;
     private float dashTimer;
 
     public override void Enter()

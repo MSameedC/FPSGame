@@ -1,7 +1,8 @@
 public class JumpState : PlayerState
 {
     public JumpState(PlayerController player) : base(player) { }
-
+    
+    private PlayerController player => (PlayerController)entity;
     private float jumpStateTimer = 0.1f; // Brief state for jump animation
 
     public override void Update(float delta)

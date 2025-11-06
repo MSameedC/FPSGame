@@ -21,12 +21,9 @@ public class CameraController : MonoBehaviour
     private float currentRotY;
     private const float Sensitivity = 2f;
 
-    private IInputProvider input;
-
     private void Start()
     {
         playerBody = transform.parent;
-        input = playerBody.GetComponent<IInputProvider>();
 
         // Update Cursor
         Cursor.visible = false;
@@ -37,7 +34,7 @@ public class CameraController : MonoBehaviour
     {
         float delta = Time.deltaTime;
 
-        Vector2 rawLookInput = input.LookInput;
+        Vector2 rawLookInput = InputManager.LookInput;
         Vector2 clampedLookInput = Vector2.ClampMagnitude(rawLookInput, maxMouseDelta);
 
         // float adsRate = isAiming ? aimMultiplier : 1f;

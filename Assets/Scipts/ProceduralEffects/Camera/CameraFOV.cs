@@ -4,7 +4,6 @@ using UnityEngine;
 public class CameraFOV : MonoBehaviour
 {
     [SerializeField] private PlayerController player;
-    [SerializeField] private InputHandler input;
     [SerializeField] private CinemachineCamera cam;
     [Space]
     [SerializeField] private float baseFOV = 60;
@@ -24,14 +23,14 @@ public class CameraFOV : MonoBehaviour
 
     private void LateUpdate()
     {
-        if (cam == null || player == null || input == null) return;
+        if (cam == null || player == null) return;
 
         float delta = Time.deltaTime;
         float movementRate = Mathf.Clamp01(player.MoveMagnitude) * intensity + 1;
         float moveFOV = baseFOV * movementRate;
 
-        float snappiness = input.IsAiming ? aimSnappiness : fovSnappiness;
-        float targetFOV = input.IsAiming ? aimFOV : moveFOV;
+        float snappiness = InputManager.IsAiming ? aimSnappiness : fovSnappiness;
+        float targetFOV = InputManager.IsAiming ? aimFOV : moveFOV;
 
         currentFOV = Mathf.Lerp(currentFOV, targetFOV, delta * snappiness);
         cam.Lens.FieldOfView = Mathf.Clamp(currentFOV, 30, 120);

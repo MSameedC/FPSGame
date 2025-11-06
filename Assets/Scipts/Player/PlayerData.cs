@@ -2,7 +2,6 @@ using UnityEngine;
 
 public class PlayerData : IPlayerData
 {
-    [SerializeField] private PlayerProfile Profile;
     private WeaponHandler WeaponParent;
     private PlayerController Player;
     private PlayerStamina Stamina;
@@ -10,23 +9,19 @@ public class PlayerData : IPlayerData
 
     // ---
 
-    public void Initialize(PlayerController player, WeaponHandler weaponHandler, PlayerHealth health, PlayerStamina stamina, PlayerProfile profile)
+    public void Initialize(PlayerController player, WeaponHandler weaponHandler, PlayerHealth health, PlayerStamina stamina)
     {
         Player = player;
         WeaponParent = weaponHandler;
         Health = health;
-        Profile = profile;
         Stamina = stamina;
     }
 
     public GameObject PlayerObj => Player.gameObject;
 
     // --- Profile ---
-    public string PlayerName => Profile.name;
-    public int PlayerId => Profile.playerId;
-
-    // --- Score ----
-    public int Score;
+    // public string PlayerName => Profile.name;
+    public int PlayerId;
 
     // --- Health ---
     public int CurrentHealth => Health.CurrentHealth;
@@ -41,17 +36,17 @@ public class PlayerData : IPlayerData
     public float CurrentHeat => WeaponParent.CurrentWeapon.CurrentHeat;
     public float MaxHeat => WeaponData.maxHeat;
 
-    // --- Movement / State ---
-    public bool IsDashing => Player.IsDashing;
-    public bool IsGrounded => Player.IsGrounded;
-    public float MoveMagnitude => Player.MoveMagnitude;
-
-    // --- Combat ---
-    public bool IsAiming => WeaponParent.CurrentWeapon != null && WeaponParent.CurrentWeapon.IsAiming();
-    public bool IsShooting => WeaponParent.CurrentWeapon != null && WeaponParent.CurrentWeapon.IsShooting;
+    // // --- Movement / State ---
+    // public bool IsDashing => Player.IsDashing;
+    // public bool IsGrounded => Player.IsGrounded;
+    // public float MoveMagnitude => Player.MoveMagnitude;
+    //
+    // // --- Combat ---
+    // public bool IsAiming => WeaponParent.CurrentWeapon != null && WeaponParent.CurrentWeapon.IsAiming();
+    // public bool IsShooting => WeaponParent.CurrentWeapon != null && WeaponParent.CurrentWeapon.IsShooting;
 
     // --- Helpers ---
-    public UpgradeableWeaponData UpgradedData => WeaponParent.CurrentWeapon?.GetUpgradedData();
+    // public UpgradeableWeaponData UpgradedData => WeaponParent.CurrentWeapon?.GetUpgradedData();
     public WeaponData WeaponData => WeaponParent.CurrentWeapon?.GetWeaponData();
     public WeaponController GetWeapon() => WeaponParent.CurrentWeapon;
     public PlayerHealth GetHealth() => Health;

@@ -1,6 +1,6 @@
-public class DeadState : BaseState
+public class EnemyDeadState : BaseState
 {
-    public DeadState(EnemyBase enemy) : base(enemy) { }
+    public EnemyDeadState(EnemyBase enemy) : base(enemy) { }
     
     private EnemyBase enemy => (EnemyBase)entity;
 

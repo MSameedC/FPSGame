@@ -78,9 +78,9 @@ public class Turret : EnemyBase
 
     #region Movement
 
-    public override void Move(float delta, Vector3 direction)
+    public override void MoveTo(Vector3 direction, float delta)
     {
-        base.Move(delta, direction);
+        base.MoveTo(direction, delta);
 
         if (!cc) return;
 
@@ -112,7 +112,7 @@ public class Turret : EnemyBase
         if (patrolTimer > 0)
         {
             patrolTimer -= delta;
-            Move(delta, randomDir);
+            MoveTo(randomDir, delta);
             LookAt(delta, randomDir);
 
             if (!(patrolTimer <= 0)) return;

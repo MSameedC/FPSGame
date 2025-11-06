@@ -1,40 +1,22 @@
-using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class InputHandler : MonoBehaviour, IInputProvider
+public class InputHandler : MonoBehaviour
 {
-    public event Action OnShootPressed;
-    public event Action OnShootReleased;
-    public event Action OnJumpPressed;        // NEW: Single-tap events
-    public event Action OnDashPressed;
-    public event Action OnSlamPressed;
-    public event Action OnAimPressed;
-    public event Action OnAimReleased;
-
-    public Vector2 MoveInput { get; private set; }
-    public Vector2 LookInput { get; private set; }
-
-    public bool IsAiming { get; private set; }
-    public bool IsJumping { get; private set; }
-    public bool IsDashing { get; private set; }
-    public bool IsSlaming { get; private set; }
-    public bool IsShooting { get; private set; }
-
-    public void Move(InputAction.CallbackContext context) => MoveInput = context.ReadValue<Vector2>();
-    public void Look(InputAction.CallbackContext context) => LookInput = context.ReadValue<Vector2>();
+    public void Move(InputAction.CallbackContext context) => InputManager.MoveInput = context.ReadValue<Vector2>();
+    public void Look(InputAction.CallbackContext context) => InputManager.LookInput = context.ReadValue<Vector2>();
 
     public void OnShoot(InputAction.CallbackContext context)
     {
         if (context.started)
         {
-            IsShooting = true;
-            OnShootPressed?.Invoke();
+            InputManager.IsShooting = true;
+            InputManager.InvokeShootPressed();
         }
         if (context.canceled)
         {
-            IsShooting = false;
-            OnShootReleased?.Invoke();
+            InputManager.IsShooting = false;
+            InputManager.InvokeShootReleased();
         }
     }
 
@@ -42,13 +24,13 @@ public class InputHandler : MonoBehaviour, IInputProvider
     {
         if (context.started)
         {
-            IsAiming = true;
-            OnAimPressed?.Invoke();
+            InputManager.IsAiming = true;
+            InputManager.InvokeAimPressed();
         }
         if (context.canceled)
         {
-            IsAiming = false;
-            OnAimReleased?.Invoke();
+            InputManager.IsAiming = false;
+            InputManager.InvokeAimReleased();
         }
     }
 
@@ -56,12 +38,12 @@ public class InputHandler : MonoBehaviour, IInputProvider
     {
         if (context.started)
         {
-            IsSlaming = true;
-            OnSlamPressed?.Invoke();
+            InputManager.IsSlaming = true;
+            InputManager.InvokeSlamPressed();
         }
         if (context.canceled)
         {
-            IsSlaming = false;
+            InputManager.IsSlaming = false;
         }
     }
 
@@ -69,12 +51,12 @@ public class InputHandler : MonoBehaviour, IInputProvider
     {
         if (context.started)
         {
-            IsJumping = true;
-            OnJumpPressed?.Invoke();
+            InputManager.IsJumping = true;
+            InputManager.InvokeJumpPressed();
         }
         if (context.canceled)
         {
-            IsJumping = false;
+            InputManager.IsJumping = false;
         }
     }
 
@@ -82,12 +64,12 @@ public class InputHandler : MonoBehaviour, IInputProvider
     {
         if (context.started)
         {
-            IsDashing = true;
-            OnDashPressed?.Invoke();
+            InputManager.IsDashing = true;
+            InputManager.InvokeDashPressed();
         }
         if (context.canceled)
         {
-            IsDashing = false;
+            InputManager.IsDashing = false;
         }
     }
 }

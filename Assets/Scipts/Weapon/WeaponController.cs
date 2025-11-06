@@ -61,9 +61,6 @@ public class WeaponController : MonoBehaviour
     private Transform CamTransform;
     private Camera Cam;
 
-    // Input
-    private IInputProvider input;
-
     // ---
 
     #region Unity Methods
@@ -72,12 +69,11 @@ public class WeaponController : MonoBehaviour
     {
         proceduralManager = GetComponent<ProceduralManager>();
         audioSource = GetComponent<AudioSource>();
-        
+        InitializeComponents();
         trailRenderer.gameObject.SetActive(false);
     }
     private void Start()
     {
-        InitializeComponents();
         InitializeTrailPool();
         
         SetState(new IdleState(this));
@@ -294,8 +290,8 @@ public class WeaponController : MonoBehaviour
 
     #region Bools
 
-    public bool IsAiming() => input.IsAiming;
-    public bool CanShoot() => FireTimer <= 0f && !OverHeating && input.IsShooting;
+    public bool IsAiming() => InputManager.IsAiming;
+    public bool CanShoot() => FireTimer <= 0f && !OverHeating && InputManager.IsShooting;
 
     #endregion
 
@@ -310,8 +306,7 @@ public class WeaponController : MonoBehaviour
     #endregion
 
     #region Accessors
-
-    public void SetInput(IInputProvider input) { this.input = input; }
+    
     public WeaponData GetWeaponData() => upgradedWeaponData.baseData;
     public UpgradeableWeaponData GetUpgradedData() => upgradedWeaponData;
 

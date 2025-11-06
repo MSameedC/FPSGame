@@ -5,23 +5,88 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="2f64c14c-5d9e-493c-8883-e024d859dd4c" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.vscode/settings.json" beforeDir="false" afterPath="$PROJECT_DIR$/.vscode/settings.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/WorldBorder.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/WorldBorder.cs.meta" beforeDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/Scipts/Interface/IKnockback.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/Scipts/Interface/IKnockback.cs.meta" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/Scipts/Static/EntityHelper.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/Scipts/Static/EntityHelper.cs.meta" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.FPSGame/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.FPSGame/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Data/Enemy/Mutant.asset" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Data/Enemy/Mutant.asset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Prefab/Enemy.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Prefab/Enemy.prefab" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Prefab/Player.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Prefab/Player.prefab" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scenes/SampleScene.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/SampleScene.unity" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scipts/AudioManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scipts/AudioManager.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scipts/Enemy/Drone.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scipts/Enemy/Drone.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scipts/Enemy/Enemy.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scipts/Enemy/Enemy.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scipts/Enemy/EnemyBase.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scipts/Enemy/EnemyBase.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scipts/Enemy/States.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scipts/Enemy/States/AttackState.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scipts/Enemy/States/AttackState.cs.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scipts/Enemy/States/ChaseState.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scipts/Enemy/States/ChaseState.cs.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scipts/Enemy/States/DeadState.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scipts/Enemy/States/DeadState.cs.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scipts/Enemy/States/EnemyState.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scipts/Enemy/States/EnemyState.cs.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scipts/Enemy/States/PatrolState.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scipts/Enemy/States/PatrolState.cs.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scipts/Enemy/Turrent.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scipts/Enemy/Turret.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scipts/Enemy/Turrent.cs.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scipts/Enemy/Turret.cs.meta" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scipts/Input/InputHandler.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scipts/Input/InputHandler.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scipts/Interface/IInputProvider.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scipts/Interface/IInputProvider.cs.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scipts/Interface/IPlayerState.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scipts/Interface/IPlayerState.cs.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scipts/Player/CameraController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scipts/Player/CameraController.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scipts/Player/PlayerController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scipts/Player/PlayerController.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scipts/Player/PlayerData.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scipts/Player/PlayerData.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scipts/Player/PlayerProfile.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scipts/Player/PlayerProfile.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scipts/Player/States.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scipts/Player/States/AirborneState.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scipts/Player/States/AirborneState.cs.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scipts/Player/States/DashState.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scipts/Player/States/DashState.cs.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scipts/Player/States/GroundedState.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scipts/Player/States/GroundedState.cs.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scipts/Player/States/JumpState.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scipts/Player/States/JumpState.cs.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scipts/Player/States/PlayerState.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scipts/Player/States/PlayerState.cs.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scipts/Player/States/SlamState.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scipts/Player/States/SlamState.cs.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scipts/ProceduralEffects/Camera/CameraFOV.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scipts/ProceduralEffects/Camera/CameraFOV.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scipts/ProceduralEffects/Weapon/ProceduralManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scipts/ProceduralEffects/Weapon/ProceduralManager.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scipts/Setup/PlayerRegistry.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scipts/Setup/PlayerRegistry.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scipts/Setup/PlayerSetup.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scipts/Setup/PlayerSetup.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scipts/Static/AnimationName.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scipts/Static/AnimationName.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scipts/Variables/WeaponType.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scipts/Variables/WeaponType.cs.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scipts/Weapon/WeaponController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scipts/Weapon/WeaponController.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scipts/Weapon/WeaponHandler.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scipts/Weapon/WeaponHandler.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ProjectSettings/URPProjectSettings.asset" beforeDir="false" afterPath="$PROJECT_DIR$/ProjectSettings/URPProjectSettings.asset" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
+  <component name="DpaMonitoringSettings">
+    <option name="firstShow" value="false" />
+  </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="HighlightingSettingsPerFile">
+    <setting file="mock:///home/sameed/Documents/Unity/FPSGame/Assets/Scipts/Enemy/States/DeadState.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///home/sameed/Documents/Unity/FPSGame/Assets/Scipts/Enemy/States/DeadState.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/Scipts/GameManager.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Assets/Scipts/Input/InputHandlerStatic.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Assets/Scipts/Interface/IKnockback.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Assets/Scipts/Interface/IMoveable.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Assets/Scipts/Static/EntityHelper.cs" root0="FORCE_HIGHLIGHTING" />
   </component>
+  <component name="MetaFilesCheckinStateConfiguration" checkMetaFiles="true" />
   <component name="ProblemsViewState">
-    <option name="selectedTabId" value="Toolset" />
+    <option name="selectedTabId" value="CurrentFile" />
   </component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 3
@@ -33,6 +98,8 @@
   </component>
   <component name="PropertiesComponent">{
   &quot;keyToString&quot;: {
+    &quot;ASKED_SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;Attach to Unity Editor.Attach to Unity Editor.executor&quot;: &quot;Debug&quot;,
     &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
@@ -42,7 +109,7 @@
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
     &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
     &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;SolutionBuilderGeneralOptionsPage&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;editor.preferences.smartKeys_rider&quot;,
     &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
 }</component>
@@ -112,18 +179,32 @@
       <updated>1762334397159</updated>
       <workItem from="1762334399359" duration="1471000" />
       <workItem from="1762335903260" duration="19000" />
+      <workItem from="1762336405366" duration="4816000" />
+      <workItem from="1762355793460" duration="4836000" />
+      <workItem from="1762419702560" duration="208000" />
+      <workItem from="1762420203781" duration="4891000" />
+      <workItem from="1762428334984" duration="31000" />
+      <workItem from="1762428380943" duration="71000" />
+      <workItem from="1762428469487" duration="575000" />
+      <workItem from="1762429067534" duration="3608000" />
+      <workItem from="1762435345498" duration="10595000" />
+      <workItem from="1762453758116" duration="376000" />
+      <workItem from="1762454230487" duration="2330000" />
+      <workItem from="1762456687898" duration="1000" />
     </task>
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
   </component>
+  <component name="UnityCheckinConfiguration" checkUnsavedScenes="true" />
   <component name="UnityProjectConfiguration" hasMinimizedUI="true" />
   <component name="UnityProjectDiscoverer">
     <option name="hasUnityReference" value="true" />
     <option name="unityProject" value="true" />
     <option name="unityProjectFolder" value="true" />
   </component>
+  <component name="UnityUnitTestConfiguration" currentTestLauncher="Both" />
   <component name="VcsManagerConfiguration">
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
   </component>

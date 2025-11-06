@@ -1,14 +1,15 @@
-public class AttackState : EnemyState
+public class EnemyAttackState : BaseState
 {
-    public AttackState(EnemyBase enemy) : base(enemy) { }
+    public EnemyAttackState(EnemyBase enemy) : base(enemy) { }
+    
+    private EnemyBase enemy => (EnemyBase)entity;
     
     public override void Enter()
     {
         enemy.ResetAttackData();
         enemy.Attack(); // ⭐ CALL ATTACK HERE, not in Update!
     }
-
-    // ReSharper disable Unity.PerformanceAnalysis
+    
     public override void Update(float delta)
     {
         // Wait for attack to complete
@@ -20,14 +21,14 @@ public class AttackState : EnemyState
         // Attack finished - check what to do next
         if (!enemy.IsInAttackRange())
         {
-            enemy.SetState(new ChaseState(enemy));
+            enemy.SetState(new EnemyGroundedState(enemy));
         }
         else
         {
             // Player still in range - start new attack after cooldown
             if (enemy.CanAttack())
             {
-                enemy.SetState(new AttackState(enemy));
+                enemy.SetState(new EnemyAttackState(enemy));
             }
             // Otherwise wait in this state until cooldown finishes
         }

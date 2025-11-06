@@ -3,9 +3,8 @@ using UnityEngine;
 public class WeaponHandler : MonoBehaviour
 {
     [SerializeField] private PlayerController playerManager;
-    [SerializeField] private InputHandler input;
 
-    private IPlayerState player;
+    private IMoveable player;
     private WeaponController lastWeapon;
     public WeaponController CurrentWeapon => lastWeapon;
 
@@ -34,29 +33,23 @@ public class WeaponHandler : MonoBehaviour
 
     private void BindTo(WeaponController weapon)
     {
-        if (weapon == null || input == null) return;
+        if (weapon == null) return;
 
-        input.OnShootPressed += weapon.OnShootPressed;
-        input.OnShootReleased += weapon.OnShootCancelled;
-
-        weapon.SetInput(input);
+        InputManager.OnShootPressed += weapon.OnShootPressed;
+        InputManager.OnShootReleased += weapon.OnShootCancelled;
 
         ProceduralManager proceduralManager = weapon.GetComponent<ProceduralManager>();
-        proceduralManager.SetInput(input);
         proceduralManager.SetPlayer(player);
     }
 
     private void UnbindFrom(WeaponController weapon)
     {
-        if (weapon == null || input == null) return;
+        if (weapon == null) return;
 
-        input.OnShootPressed -= weapon.OnShootPressed;
-        input.OnShootReleased -= weapon.OnShootCancelled;
-
-        weapon.SetInput(null);
+        InputManager.OnShootPressed -= weapon.OnShootPressed;
+        InputManager.OnShootReleased -= weapon.OnShootCancelled;
 
         ProceduralManager proceduralManager = weapon.GetComponent<ProceduralManager>();
-        proceduralManager.SetInput(null);
         proceduralManager.SetPlayer(null);
     }
 

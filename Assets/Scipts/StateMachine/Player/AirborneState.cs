@@ -3,6 +3,8 @@ using UnityEngine;
 public class AirborneState : PlayerState
 {
     public AirborneState(PlayerController player) : base(player) { }
+    
+    private PlayerController player => (PlayerController)entity;
 
     public override void Update(float delta)  // Use Update instead of LateUpdate
     {
@@ -27,7 +29,7 @@ public class AirborneState : PlayerState
         if (player.CanDash())
             player.SetState(new DashState(player));
     }
-
+    
     public override void OnSlamInput()
     {
         if (player.CanSlam())

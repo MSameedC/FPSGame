@@ -17,5 +17,5 @@ MonoBehaviour:
   detectRange: 15
   damage: 10
   attackRate: 0.3
-  attackRange: {x: 1, y: 2}
+  attackRange: {x: 3, y: 4}
   scoreValue: 10

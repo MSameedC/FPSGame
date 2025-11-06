@@ -9,6 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5167982603916904187}
+  - component: {fileID: 8438050090103970694}
   m_Layer: 3
   m_Name: Mesh
   m_TagString: Untagged
@@ -32,6 +33,20 @@ Transform:
   - {fileID: 3540170948349244771}
   m_Father: {fileID: 4186163935213539048}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &8438050090103970694
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9117580291163266473}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: abef07b4e7c3459de8deb956ef357953, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: '::'
+  hurtMaterial: {fileID: 2100000, guid: e87c17fbb67e98f12a58f68f75fd3852, type: 2}
+  meshRenderer: {fileID: 8882163556158957386}
 --- !u!1 &9192689883023297194
 GameObject:
   m_ObjectHideFlags: 0
@@ -82,9 +97,6 @@ MonoBehaviour:
   moveSmoothness: 10
   rotationSpeed: 8
   animator: {fileID: 3521153455405034254}
-  gravityData:
-    fallStrength: 1.25
-    groundStickForce: -1
 --- !u!143 &429694496426526887
 CharacterController:
   m_ObjectHideFlags: 0
@@ -358,3 +370,8 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!137 &8882163556158957386 stripped
+SkinnedMeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 5613815499662603714, guid: 8094c3ee743831747a3b98e274329f40, type: 3}
+  m_PrefabInstance: {fileID: 3939400379401163400}
+  m_PrefabAsset: {fileID: 0}

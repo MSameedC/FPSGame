@@ -6,8 +6,7 @@ public class ProceduralManager : MonoBehaviour
     private WeaponData weaponData;
 
     private IProceduralEffect[] effects;
-    private IInputProvider input;
-    private IPlayerState player;
+    private IMoveable player;
 
     #region Unity
 
@@ -41,18 +40,18 @@ public class ProceduralManager : MonoBehaviour
     {
         return new ProceduralRuntimeContext
         {
-            moveInput = input.MoveInput,
-            lookInput = input.LookInput,
-            isAiming = input.IsAiming,
+            moveInput = InputManager.MoveInput,
+            lookInput = InputManager.LookInput,
+            isAiming = InputManager.IsAiming,
             isShooting = isShooting,
-            isDashing = input.IsDashing,
+            isDashing = InputManager.IsDashing,
             isGrounded = player.IsGrounded,
             moveMagnitude = player.MoveMagnitude,
             deltaTime = Time.deltaTime
         };
     }
 
-    // Only requied once
+    // Only required once
     public ProceduralRuntimeContext BuildBaseContext()
     {
         return new ProceduralRuntimeContext
@@ -71,11 +70,6 @@ public class ProceduralManager : MonoBehaviour
 
     #region Accessors
 
-    public void SetInput(IInputProvider input)
-    {
-        this.input = input;
-    }
-
     public void SetShooting(bool shooting)
     {
         isShooting = shooting;
@@ -86,7 +80,7 @@ public class ProceduralManager : MonoBehaviour
         weaponData = data;
     }
 
-    public void SetPlayer(IPlayerState player)
+    public void SetPlayer(IMoveable player)
     {
         this.player = player;
     }

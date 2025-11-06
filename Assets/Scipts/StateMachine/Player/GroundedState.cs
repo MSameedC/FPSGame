@@ -3,6 +3,8 @@ using UnityEngine;
 public class GroundedState : PlayerState
 {
     public GroundedState(PlayerController player) : base(player) { }
+    
+    private PlayerController player => (PlayerController)entity;
 
     public override void Update(float delta)
     {

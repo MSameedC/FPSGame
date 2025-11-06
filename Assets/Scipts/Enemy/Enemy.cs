@@ -89,9 +89,9 @@ public class Enemy : EnemyBase
 
     #region Movement
 
-    public override void Move(float delta, Vector3 direction)
+    public override void MoveTo(Vector3 direction, float delta)
     {
-        base.Move(delta, direction);
+        base.MoveTo(direction, delta);
 
         if (!cc) return;
 
@@ -126,7 +126,7 @@ public class Enemy : EnemyBase
         if (patrolTimer > 0)
         {
             patrolTimer -= delta;
-            Move(delta, randomDir);
+            MoveTo(randomDir, delta);
             LookAt(delta, randomDir);
 
             if (!(patrolTimer <= 0)) return;
@@ -167,7 +167,7 @@ public class Enemy : EnemyBase
         yield return new WaitForSeconds(state.length);
     }
 
-    protected override void OnDeathEnter()
+    public override void OnDeathEnter()
     {
         animator.Play(AnimationName.Die);
     }
