@@ -11,8 +11,14 @@ public class EnemyHurtState : BaseState
 
     public override void Update(float delta)
     {
-        if (!enemy.IsGrounded) return;
-        // Get back up animation, return
-        enemy.SetState(new EnemyGroundedState(enemy));
+        if (enemy.useGravity)
+        {
+            if (!enemy.IsGrounded) return;
+            enemy.SetState(new EnemyGroundedState(enemy));
+        }
+        else
+        {
+            enemy.SetState(new EnemyGroundedState(enemy));
+        }
     }
 }

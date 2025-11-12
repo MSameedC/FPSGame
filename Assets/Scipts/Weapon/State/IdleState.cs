@@ -17,6 +17,6 @@ public class IdleState : WeaponState
             return;
         }
 
-        weapon.SetSliderLocked(true);
+        // weapon.SetSliderLocked(true);
     }
 }

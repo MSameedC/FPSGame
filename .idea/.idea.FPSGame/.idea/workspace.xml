@@ -5,64 +5,65 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="2f64c14c-5d9e-493c-8883-e024d859dd4c" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/Assets/Scipts/Interface/IKnockback.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Assets/Scipts/Interface/IKnockback.cs.meta" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Assets/Scipts/Static/EntityHelper.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Assets/Scipts/Static/EntityHelper.cs.meta" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/Scipts/Interface/IPoolable.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/Scipts/Interface/IPoolable.cs.meta" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/Scipts/Static/PlayerTrailManager.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/Scipts/Static/PoolSystem.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/Scipts/Static/PoolSystem.cs.meta" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.FPSGame/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.FPSGame/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Data/Enemy/Mutant.asset" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Data/Enemy/Mutant.asset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Data/Enemy/Drone.asset" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Data/Enemy/Drone.asset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Material/Hurt.mat" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Material/Hurt.mat" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Model/Drone/BaseColor.mat" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Model/Drone/BaseColor.mat.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Model/Drone/Drone.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Model/Drone/Drone.prefab" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Model/Drone/Drone.prefab.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Model/Drone/Drone.prefab.meta" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Model/Drone/FireHoles.mat" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Model/Drone/FireHoles.mat.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Model/Drone/Lowpoly Enemy Drone.fbx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Model/Drone/Lowpoly Enemy Drone.fbx.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Model/Drone/Material #70.mat" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Model/Drone/Material #70.mat.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Model/Drone/Material #72.mat" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Model/Drone/Material #72.mat.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Model/Drone/Rim.mat" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Model/Drone/Rim.mat.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Model/Drone/fire.mat" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Model/Drone/fire.mat.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Prefab/Drone.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Prefab/Drone.prefab" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Prefab/Enemy.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Prefab/Enemy.prefab" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Prefab/Player.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Prefab/Player.prefab" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Scenes/SampleScene.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/SampleScene.unity" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scipts/AudioManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scipts/AudioManager.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Scipts/Enemy/Drone.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scipts/Enemy/Drone.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Scipts/Enemy/Enemy.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scipts/Enemy/Enemy.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Scipts/Enemy/EnemyBase.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scipts/Enemy/EnemyBase.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scipts/Enemy/States.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scipts/Enemy/States/AttackState.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scipts/Enemy/States/AttackState.cs.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scipts/Enemy/States/ChaseState.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scipts/Enemy/States/ChaseState.cs.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scipts/Enemy/States/DeadState.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scipts/Enemy/States/DeadState.cs.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scipts/Enemy/States/EnemyState.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scipts/Enemy/States/EnemyState.cs.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scipts/Enemy/States/PatrolState.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scipts/Enemy/States/PatrolState.cs.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scipts/Enemy/Turrent.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scipts/Enemy/Turret.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scipts/Enemy/Turrent.cs.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scipts/Enemy/Turret.cs.meta" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scipts/Input/InputHandler.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scipts/Input/InputHandler.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scipts/Interface/IInputProvider.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scipts/Interface/IInputProvider.cs.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scipts/Interface/IPlayerState.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scipts/Interface/IPlayerState.cs.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scipts/Player/CameraController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scipts/Player/CameraController.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scipts/Enemy/Turret.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scipts/Enemy/Turret.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scipts/EnemyManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scipts/EnemyManager.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scipts/MeshManager.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scipts/MeshManager.cs.meta" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Scipts/Player/PlayerController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scipts/Player/PlayerController.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scipts/Player/PlayerData.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scipts/Player/PlayerData.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scipts/Player/PlayerProfile.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scipts/Player/PlayerProfile.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scipts/Player/States.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scipts/Player/States/AirborneState.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scipts/Player/States/AirborneState.cs.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scipts/Player/States/DashState.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scipts/Player/States/DashState.cs.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scipts/Player/States/GroundedState.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scipts/Player/States/GroundedState.cs.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scipts/Player/States/JumpState.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scipts/Player/States/JumpState.cs.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scipts/Player/States/PlayerState.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scipts/Player/States/PlayerState.cs.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scipts/Player/States/SlamState.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scipts/Player/States/SlamState.cs.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scipts/ProceduralEffects/Camera/CameraFOV.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scipts/ProceduralEffects/Camera/CameraFOV.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scipts/ProceduralEffects/Weapon/ProceduralManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scipts/ProceduralEffects/Weapon/ProceduralManager.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scipts/Setup/PlayerRegistry.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scipts/Setup/PlayerRegistry.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scipts/Setup/PlayerSetup.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scipts/Setup/PlayerSetup.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scipts/Static/AnimationName.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scipts/Static/AnimationName.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scipts/Variables/WeaponType.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scipts/Variables/WeaponType.cs.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scipts/Player/PlayerHealth.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scipts/Player/PlayerHealth.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scipts/StateMachine/Enemy/EnemyDeadState.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scipts/StateMachine/Enemy/EnemyDeadState.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scipts/StateMachine/Enemy/EnemyGroundedState.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scipts/StateMachine/Enemy/EnemyGroundedState.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scipts/StateMachine/Enemy/EnemyHurtState.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scipts/StateMachine/Enemy/EnemyHurtState.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scipts/StateMachine/Player/AirborneState.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scipts/StateMachine/Player/PlayerAirborneState.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scipts/StateMachine/Player/AirborneState.cs.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scipts/StateMachine/Player/PlayerAirborneState.cs.meta" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scipts/StateMachine/Player/DashState.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scipts/StateMachine/Player/PlayerDashState.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scipts/StateMachine/Player/DashState.cs.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scipts/StateMachine/Player/PlayerDashState.cs.meta" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scipts/StateMachine/Player/GroundedState.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scipts/StateMachine/Player/PlayerGroundedState.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scipts/StateMachine/Player/GroundedState.cs.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scipts/StateMachine/Player/PlayerGroundedState.cs.meta" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scipts/StateMachine/Player/JumpState.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scipts/StateMachine/Player/PlayerJumpState.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scipts/StateMachine/Player/JumpState.cs.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scipts/StateMachine/Player/PlayerJumpState.cs.meta" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scipts/StateMachine/Player/SlamState.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scipts/StateMachine/Player/PlayerSlamState.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scipts/StateMachine/Player/SlamState.cs.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scipts/StateMachine/Player/PlayerSlamState.cs.meta" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scipts/Weapon/State/IdleState.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scipts/Weapon/State/IdleState.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Scipts/Weapon/WeaponController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scipts/Weapon/WeaponController.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scipts/Weapon/WeaponHandler.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scipts/Weapon/WeaponHandler.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ProjectSettings/URPProjectSettings.asset" beforeDir="false" afterPath="$PROJECT_DIR$/ProjectSettings/URPProjectSettings.asset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/UI/PlayerHUD.uxml" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/UI/PlayerHUD.uxml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/UI/Style/MainStyle.uss" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/UI/Style/MainStyle.uss" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Volume/Profiles/DefaultVolumeProfile.asset" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Volume/Profiles/DefaultVolumeProfile.asset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/WorldBorder.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/WorldBorder.cs.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Packages/packages-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/Packages/packages-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ProjectSettings/ProjectSettings.asset" beforeDir="false" afterPath="$PROJECT_DIR$/ProjectSettings/ProjectSettings.asset" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -76,13 +77,15 @@
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="HighlightingSettingsPerFile">
-    <setting file="mock:///home/sameed/Documents/Unity/FPSGame/Assets/Scipts/Enemy/States/DeadState.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///home/sameed/Documents/Unity/FPSGame/Assets/Scipts/Enemy/States/DeadState.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Assets/Scipts/Bullet.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Assets/Scipts/EnemyVFX.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/Scipts/GameManager.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Assets/Scipts/Input/InputHandlerStatic.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/Scipts/Interface/IKnockback.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/Scipts/Interface/IMoveable.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Assets/Scipts/Interface/IPoolable.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/Scipts/Static/EntityHelper.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Assets/Scipts/Static/PlayerTrailManager.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Assets/Scipts/Static/PoolSystem.cs" root0="FORCE_HIGHLIGHTING" />
   </component>
   <component name="MetaFilesCheckinStateConfiguration" checkMetaFiles="true" />
   <component name="ProblemsViewState">
@@ -92,6 +95,9 @@
   &quot;associatedIndex&quot;: 3
 }</component>
   <component name="ProjectId" id="353MeQG96xAPNYrtR5wLIZfOe5b" />
+  <component name="ProjectLevelVcsManager">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
@@ -109,7 +115,7 @@
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
     &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
     &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;editor.preferences.smartKeys_rider&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.sourceCode.C#&quot;,
     &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
 }</component>
@@ -191,6 +197,21 @@
       <workItem from="1762453758116" duration="376000" />
       <workItem from="1762454230487" duration="2330000" />
       <workItem from="1762456687898" duration="1000" />
+      <workItem from="1762510557732" duration="1931000" />
+      <workItem from="1762513485781" duration="4023000" />
+      <workItem from="1762530441915" duration="858000" />
+      <workItem from="1762531320801" duration="1544000" />
+      <workItem from="1762534535828" duration="198000" />
+      <workItem from="1762534756261" duration="1064000" />
+      <workItem from="1762771612965" duration="1712000" />
+      <workItem from="1762773918600" duration="352000" />
+      <workItem from="1762774292575" duration="133000" />
+      <workItem from="1762792967907" duration="1881000" />
+      <workItem from="1762794872090" duration="6428000" />
+      <workItem from="1762850713758" duration="6958000" />
+      <workItem from="1762878602851" duration="8352000" />
+      <workItem from="1762890503279" duration="459000" />
+      <workItem from="1762938237690" duration="1461000" />
     </task>
     <servers />
   </component>

@@ -7,30 +7,42 @@ public class Drone : EnemyBase
     [SerializeField] private float hoverHeight = 3f;
     [SerializeField] private float heightSmoothTime = 0.5f;
     [Space]
+    [SerializeField] private GameObject bulletPrefab;
+    [Space]
+    [SerializeField] private Transform muzzle;
     [SerializeField] private VisualEffect spark;
-    private CharacterController cc;
-
-    private float bufferTimer = 0;
-    private float patrolTimer = 0;
-    private float waitTimer = 0;
 
     private Vector3 velocity;
-    private Vector3 randomDir;
-    private Vector3 horizontalVelocity;
+    
+    protected override Vector3 moveVelocity { get; set; }
+    
+    // ---
 
     private void Awake()
     {
-        cc = GetComponent<CharacterController>();
+        Bullet bullet = bulletPrefab.GetComponent<Bullet>();
+        bullet.Initialize(Data.damage, 50, 5, Vector3.forward);
+    }
+
+    private void LateUpdate()
+    {
+        Hover();
     }
 
     #region Movement
-    
+
     public override void MoveTo(Vector3 direction, float delta)
     {
         base.MoveTo(direction, delta);
-
-        if (!cc) return;
         
+        // Horizontal Movement
+        Vector3 targetVelocity = new Vector3(direction.x, 0, direction.z) * Data.moveSpeed;
+        Vector3 horizontalVelocity = new Vector3(targetVelocity.x, 0, targetVelocity.z);
+        moveVelocity = Vector3.Lerp(moveVelocity, horizontalVelocity, delta * moveSmoothness);
+    }
+
+    private void Hover()
+    {
         // Hovering
         // Get ground height
         float groundHeight = GetGroundHeight();
@@ -41,13 +53,6 @@ public class Drone : EnemyBase
         Vector3 newPosition = transform.position;
         newPosition.y = newY;
         transform.position = newPosition;
-        
-        // Horizontal Movement
-        Vector3 targetvelocity = new Vector3(direction.x, 0, direction.z) * Data.moveSpeed;
-        horizontalVelocity = new Vector3(targetvelocity.x, 0, targetvelocity.z);
-        velocity = Vector3.Lerp(velocity, targetvelocity, delta * moveSmoothness);
-
-        cc.Move(velocity * delta);
     }
     
     private float GetGroundHeight()
@@ -55,52 +60,6 @@ public class Drone : EnemyBase
         if (Physics.Raycast(transform.position, Vector3.down, out RaycastHit hit, 50f))
             return hit.point.y;
         return transform.position.y - hoverHeight; // Fallback
-    }
-
-    public override void Patrol(float delta)
-    {
-        // Handle direction change
-        if (bufferTimer <= 0)
-        {
-            randomDir = GetRandomDirection();
-            bufferTimer = Random.Range(2f, 6f);
-        }
-        else
-        {
-            bufferTimer -= delta;
-        }
-
-        // Patrol state machine
-        if (patrolTimer > 0)
-        {
-            patrolTimer -= delta;
-            MoveTo(randomDir, delta);
-            LookAt(delta, randomDir);
-
-            if (!(patrolTimer <= 0)) return;
-            waitTimer = Random.Range(2f, 6f);
-            Stop();
-        }
-        else if (waitTimer > 0)
-        {
-            waitTimer -= delta;
-            Stop();
-
-            if (waitTimer <= 0)
-            {
-                patrolTimer = Random.Range(2f, 6f);
-            }
-        }
-        else
-        {
-            patrolTimer = Random.Range(2f, 6f);
-        }
-    }
-
-    public override void Stop()
-    {
-        // Smoothly stop horizontal movement
-        horizontalVelocity = Vector3.Lerp(horizontalVelocity, Vector3.zero, Time.deltaTime * moveSmoothness);
     }
     
     #endregion
@@ -110,12 +69,8 @@ public class Drone : EnemyBase
     public override void Attack()
     {
         // Fire at player
-        Fire();
-    }
-
-    private void Fire()
-    {
-        
+        enemyManager.SpawnBullet(muzzle.position, muzzle.forward, Data.damage, 40, 5);
+        // Spawn only once and if looking at player not beforehand
     }
 
     public override void UpdateAttackPosition(float delta)
@@ -129,12 +84,13 @@ public class Drone : EnemyBase
 
     protected override IEnumerator WaitForDeathCompletion()
     {
-        return null;
+        yield return new WaitForSeconds(1);
     }
 
     public override void OnDeathEnter()
     {
         spark.Play();
+        useGravity = true;
     }
 
     #endregion

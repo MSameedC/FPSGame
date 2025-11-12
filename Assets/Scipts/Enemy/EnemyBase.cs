@@ -1,14 +1,21 @@
+using System;
 using System.Collections;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
-public abstract class EnemyBase : MonoBehaviour, IMoveable, IDamageable, IKnockback
+public abstract class EnemyBase : MonoBehaviour, IMoveable, IDamageable, IKnockback, IPoolable
 {
+    public event Action OnPlayerSpotted;
+    public event Action OnPlayerLost;
+    public event Action OnHurt;
+    
     [SerializeField] protected EnemyData Data;
-
     [Header("Movement")]
     [SerializeField] protected float moveSmoothness = 10;
     [SerializeField] protected float rotationSpeed = 6;
+    [Range(0, 1)] [SerializeField] protected float knockbackWeight;
+    [Space]
+    [SerializeField] public bool useGravity = true;
 
     #region Enemy Data Variables
 
@@ -19,19 +26,29 @@ public abstract class EnemyBase : MonoBehaviour, IMoveable, IDamageable, IKnockb
     public int ScoreValue => Data.scoreValue;
 
     #endregion
-    
-    public float CurrentHealth { get; protected set; }
-    public Transform player { get; protected set; }
-    public CharacterController CharacterController { get; protected set; }
-    public bool IsGrounded => CharacterController.isGrounded;
-    public float MoveMagnitude { get; protected set; }
 
-    // Private
-    private Vector3 knockbackVelocity;
+    public float CurrentHealth { get; protected set; }
+    protected Transform player;
+    protected CharacterController CharacterController;
+    
+    public float MoveMagnitude { get; private set; }
+    public bool IsGrounded => CharacterController.isGrounded;
+
+    protected abstract Vector3 moveVelocity { get; set; }
+    
     private float attackTimer;
+    
+    private float bufferTimer;
+    private float patrolTimer;
+    private float waitTimer;
+    private Vector3 randomDir;
+    
+    private float gravityVelocity;
+    private Vector3 knockbackVelocity;
+    private Vector3 totalVelocity;
+    
     private PlayerRegistry PlayerRegistry;
-    private EnemyManager EnemyManager;
-    private MeshManager MeshManager;
+    protected EnemyManager enemyManager;
     
     // State machine
     private BaseState currentState;
@@ -42,22 +59,32 @@ public abstract class EnemyBase : MonoBehaviour, IMoveable, IDamageable, IKnockb
     {
         // Get Component
         PlayerRegistry = PlayerRegistry.Instance;
-        EnemyManager = EnemyManager.Instance;
+        enemyManager = EnemyManager.Instance;
         
         CharacterController = GetComponent<CharacterController>();
-        MeshManager = GetComponentInChildren<MeshManager>();
         
+        OnSpawn();
+        FindPlayer();
+    }
+
+    public void OnSpawn()
+    {
         // Set Data
         CurrentHealth = Data.maxHealth;
-
-        FindPlayer();
         SetState(new EnemyGroundedState(this));
+    }
+
+    public void OnDespawn()
+    {
+        
     }
 
     protected virtual void Update()
     {
         float delta = Time.deltaTime;
-
+        
+        if (!CharacterController) return;
+        
         // If out of world, kill itself
         if (transform.position.y < -200) TakeDamage(99999999);
 
@@ -67,12 +94,25 @@ public abstract class EnemyBase : MonoBehaviour, IMoveable, IDamageable, IKnockb
         // Common timer updates
         if (attackTimer > 0) attackTimer -= delta;
         
-        // Knockback
-        if (knockbackVelocity.magnitude > 0.1f)
+        // Apply gravity only if enabled
+        if (useGravity)
         {
-            CharacterController.Move(knockbackVelocity * delta);
-            knockbackVelocity = Vector3.Lerp(knockbackVelocity, Vector3.zero, 3f * delta);
+            ApplyGravity(delta);
         }
+        else
+        {
+            gravityVelocity = 0f; // No gravity for flying enemies
+        }
+        
+        // Velocity
+        totalVelocity = moveVelocity + knockbackVelocity + Vector3.up * gravityVelocity;
+        CharacterController.Move(totalVelocity * delta);
+
+        if (moveVelocity.magnitude > 0.01f)
+            moveVelocity = Vector3.Lerp(moveVelocity, Vector3.zero, 10f * delta);
+        
+        if (knockbackVelocity.magnitude > 0.1f)
+            knockbackVelocity = Vector3.Slerp(knockbackVelocity, Vector3.zero, 3f * delta);
     }
 
     #endregion
@@ -108,7 +148,22 @@ public abstract class EnemyBase : MonoBehaviour, IMoveable, IDamageable, IKnockb
     #region Behaviour
 
     #region Movement/Detection
-
+    
+    private void ApplyGravity(float delta)
+    {
+        if (CharacterController.isGrounded && gravityVelocity < 0)
+        {
+            gravityVelocity = GravityData.groundStickForce;
+        }
+        else
+        {
+            float maxFallSpeed = 20;
+            float gravityMultiplier = (gravityVelocity < 0) ? GravityData.fallStrength : 1f;
+            gravityVelocity += GravityData.gravity * gravityMultiplier * delta;
+            gravityVelocity = Mathf.Max(gravityVelocity, -maxFallSpeed);
+        }
+    }
+    
     // Detection
     public float GetDistanceToPlayer()
     {
@@ -129,7 +184,14 @@ public abstract class EnemyBase : MonoBehaviour, IMoveable, IDamageable, IKnockb
     
     public bool PlayerSpotted()
     {
-        return GetDistanceToPlayer() <= DetectRange;
+        if (GetDistanceToPlayer() <= DetectRange)
+        {
+            OnPlayerSpotted?.Invoke();
+            return true;
+        }
+        
+        OnPlayerLost?.Invoke();
+        return false;
     }
     public bool IsTooClose()
     {
@@ -157,9 +219,11 @@ public abstract class EnemyBase : MonoBehaviour, IMoveable, IDamageable, IKnockb
         if (direction.magnitude > 1f)
             direction.Normalize();
         
-        MoveMagnitude =  direction.magnitude;
+        float rawSpeed = new Vector3(moveVelocity.x, 0, moveVelocity.z).magnitude;
+        MoveMagnitude = Mathf.InverseLerp(0f, Data.moveSpeed, rawSpeed);
     }
-    public void LookAt(float delta, Vector3 direction)
+
+    protected void LookAt(float delta, Vector3 direction)
     {
         Quaternion targetRotation = Quaternion.LookRotation(direction);
         transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, rotationSpeed * delta);
@@ -168,9 +232,57 @@ public abstract class EnemyBase : MonoBehaviour, IMoveable, IDamageable, IKnockb
     {
         MoveTo(GetDirectionAwayFromPlayer(), delta);
         LookAt(delta, GetDirectionTowardsPlayer());
-    } // This may be same for every enemy, Just move away
-    public virtual void Patrol(float delta) { } // This may be same for every enemy, Just move around and look for player
-    public virtual void Stop() { } // This may be same for every enemy, Just stop moving
+    }
+
+    public virtual void Patrol(float delta)
+    {
+        // Handle direction change
+        if (bufferTimer <= 0)
+        {
+            randomDir = GetRandomDirection();
+            bufferTimer = Random.Range(2f, 6f);
+        }
+        else
+        {
+            bufferTimer -= delta;
+        }
+
+        // Patrol state machine
+        if (patrolTimer > 0)
+        {
+            patrolTimer -= delta;
+            MoveTo(randomDir, delta);
+            LookAt(delta, randomDir);
+
+            if (!(patrolTimer <= 0)) return;
+            waitTimer = Random.Range(2f, 6f);
+            Stop();
+        }
+        else if (waitTimer > 0)
+        {
+            waitTimer -= delta;
+            Stop();
+
+            if (waitTimer <= 0)
+            {
+                patrolTimer = Random.Range(2f, 6f);
+            }
+        }
+        else
+        {
+            patrolTimer = Random.Range(2f, 6f);
+        }
+    }
+
+    public virtual void Chase(float delta)
+    {
+        MoveTo(GetDirectionTowardsPlayer(), delta);
+        LookAt(delta, GetDirectionTowardsPlayer());
+    }
+    public virtual void Stop()
+    {
+        moveVelocity = Vector3.zero;
+    }
 
     #endregion
 
@@ -200,12 +312,14 @@ public abstract class EnemyBase : MonoBehaviour, IMoveable, IDamageable, IKnockb
     
     public void ApplyKnockback(Vector3 direction, float force)
     {
-        knockbackVelocity = direction * force;
+        knockbackVelocity = direction.normalized * (force * knockbackWeight);
     }
 
     #endregion
     
     #region Damage/Death
+
+    public void OnHurtEnter() => OnHurt?.Invoke();
     
     // Damage
     public virtual void TakeDamage(int amount)
@@ -215,20 +329,14 @@ public abstract class EnemyBase : MonoBehaviour, IMoveable, IDamageable, IKnockb
         if (CurrentHealth <= 0) SetState(new EnemyDeadState(this));
     }
 
-    public void OnHurtEnter()
-    {
-        MeshManager.RenderHurtMaterial();
-    }
-
     // Death
     public abstract void OnDeathEnter();
-
     protected abstract IEnumerator WaitForDeathCompletion();
     public IEnumerator ReturnToPoolAfterDeath()
     {
         yield return StartCoroutine(WaitForDeathCompletion());  // Separately defined per enemy
         yield return null;  // Wait one frame after animation death completion
-        EnemyManager.UnregisterEnemy(this);
+        enemyManager.UnregisterEnemy(this);
     }
 
     #endregion

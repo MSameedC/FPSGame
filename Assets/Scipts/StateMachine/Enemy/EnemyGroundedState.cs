@@ -9,35 +9,27 @@ public class EnemyGroundedState : BaseState
         if (!enemy.PlayerSpotted())
         {
             enemy.Patrol(delta);
-            return;
         }
+        else
+        {
+            if (enemy.IsTooClose())
+            {
+                enemy.Retreat(delta);
+            }
+            else if (enemy.IsTooFar())
+            {
+                enemy.Chase(delta);
+            }
         
-        // if (!enemy.IsMoveComplete()) return;
-
-        if (enemy.IsInAttackRange())
-        {
-            enemy.SetState(new EnemyAttackState(enemy));
-            return;
-        }
-
-        if (enemy.IsTooFar())
-        {
-            ChasePlayer(delta);
-        }
-        else if (enemy.IsTooClose())
-        {
-            enemy.Retreat(delta);
+            if (enemy.IsInAttackRange())
+            {
+                enemy.SetState(new EnemyAttackState(enemy));
+            }
         }
     }
     
     public override void Exit()
     {
         enemy.Stop();
-    }
-
-    private void ChasePlayer(float delta)
-    {
-        enemy.MoveTo(enemy.GetDirectionTowardsPlayer(), delta);
-        enemy.LookAt(delta, enemy.GetDirectionTowardsPlayer());
     }
 }

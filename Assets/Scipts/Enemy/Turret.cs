@@ -15,6 +15,8 @@ public class Turret : EnemyBase
     private Vector3 horizontalVelocity;
     private CharacterController cc;
 
+    protected override Vector3 moveVelocity { get; set; }
+
     // ---
 
     #region Unity
@@ -22,34 +24,6 @@ public class Turret : EnemyBase
     private void Awake()
     {
         cc = GetComponent<CharacterController>();
-    }
-
-    protected override void Update()
-    {
-        base.Update();
-        ApplyGravity(Time.deltaTime);
-    }
-
-    #endregion
-
-    #region Gravity
-
-    private void ApplyGravity(float delta)
-    {
-        if (cc.isGrounded && velocity.y < 0)
-        {
-            // When grounded, maintain a small downward force
-            velocity.y = GravityData.groundStickForce;
-        }
-        else
-        {
-            // Apply gravity with fall acceleration
-            float gravityMultiplier = (velocity.y < 0) ? GravityData.fallStrength : 1f;
-            velocity.y += GravityData.gravity * gravityMultiplier * delta;
-
-            // Clamp fall speed for control
-            velocity.y = Mathf.Max(velocity.y, -20f);
-        }
     }
 
     #endregion
@@ -91,8 +65,7 @@ public class Turret : EnemyBase
         // Combine horizontal and vertical movement
         Vector3 finalMovement = new Vector3(horizontalVelocity.x, velocity.y, horizontalVelocity.z);
         
-        // Apply all movement at once
-        cc.Move(finalMovement * delta);
+        moveVelocity = finalMovement;
     }
     
     public override void Patrol(float delta)
@@ -133,12 +106,6 @@ public class Turret : EnemyBase
         {
             patrolTimer = Random.Range(2f, 6f);
         }
-    }
-
-    public override void Stop()
-    {
-        // Smoothly stop horizontal movement
-        horizontalVelocity = Vector3.Lerp(horizontalVelocity, Vector3.zero, Time.deltaTime * moveSmoothness);
     }
 
     #endregion

@@ -11,7 +11,7 @@ public class EnemyDeadState : BaseState
 
     public override void Update(float delta)
     {
-        if (enemy.IsGrounded) return;
+        if (!enemy.IsGrounded) return;
         enemy.StartCoroutine(enemy.ReturnToPoolAfterDeath());
     }
 }

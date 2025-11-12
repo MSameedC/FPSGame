@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-public class PlayerController : MonoBehaviour, IMoveable
+public class PlayerController : MonoBehaviour, IMoveable, IKnockback
 {
     [Header("Movement")]
     [SerializeField] private float walkSpeed = 10f;
@@ -67,6 +67,7 @@ public class PlayerController : MonoBehaviour, IMoveable
     private Vector3 finalVelocity;
     private Vector3 lastWallNormal;
     private Vector3 wallJumpVelocity;
+    private Vector3 knockbackVelocity;
     
     private bool isSlaming;
     
@@ -115,7 +116,7 @@ public class PlayerController : MonoBehaviour, IMoveable
         InputManager.OnDashPressed += OnDashInput;
         InputManager.OnSlamPressed += OnSlamInput;
 
-        SetState(new GroundedState(this));
+        SetState(new PlayerGroundedState(this));
     }
 
     private void OnDestroy()
@@ -199,7 +200,9 @@ public class PlayerController : MonoBehaviour, IMoveable
     private void OnSlamInput() => currentState?.OnSlamInput();
 
     #endregion
-
+    
+    #region Behaviour
+    // Gravity
     private void ApplyGravity(float delta)
     {
         if (IsDashing) return;
@@ -213,7 +216,7 @@ public class PlayerController : MonoBehaviour, IMoveable
         float gravityMultiplier = ((velocityY < 0.1f) ? GravityData.fallStrength : 1f) * GravityData.gravity;
         velocityY += gravityMultiplier * delta;
     }
-    
+    // Move
     public void MoveTo(Vector3 input, float delta)
     {
         if (IsDashing || isSlaming)
@@ -255,7 +258,10 @@ public class PlayerController : MonoBehaviour, IMoveable
         }
 
         // ALWAYS combine velocities and move
-        finalVelocity = inputVelocity + wallJumpVelocity + Vector3.up * velocityY;
+        finalVelocity = inputVelocity + wallJumpVelocity + knockbackVelocity + Vector3.up * velocityY;
+        
+        if (knockbackVelocity.magnitude > 0.1f)
+            knockbackVelocity = Vector3.Slerp(knockbackVelocity, Vector3.zero, 3f * delta);
 
         // CRITICAL FIX: NaN check before moving
         if (float.IsNaN(finalVelocity.x) || float.IsNaN(finalVelocity.y) || float.IsNaN(finalVelocity.z))
@@ -273,7 +279,8 @@ public class PlayerController : MonoBehaviour, IMoveable
         float rawSpeed = new Vector3(inputVelocity.x, 0, inputVelocity.z).magnitude;
         MoveMagnitude = Mathf.InverseLerp(0f, dashSpeed, rawSpeed);
     }
-
+    
+    // Jump
     public void PerformJump()
     {
         velocityY = Mathf.Sqrt(-GravityData.gravity * jumpHeight);
@@ -290,11 +297,9 @@ public class PlayerController : MonoBehaviour, IMoveable
         jumpTimer = jumpCooldown;
         OnJumped?.Invoke();
     }
-    
     public void OnLand() => OnLanded?.Invoke();
-    private static void HitStop() => VFXManager.Instance.TriggerHitStop(0.15f);
-    private void TakeStamina(int amount) => PlayerStamina.TakeStamina(amount);
-
+    
+    // Slam
     public void ApplySlamStart()
     {
         // Remove any Y velocity to avoid diagonal slam
@@ -327,47 +332,45 @@ public class PlayerController : MonoBehaviour, IMoveable
     
         foreach (Collider collider in hitColliders)
         {
-            EnemyBase enemy = collider.GetComponent<EnemyBase>();
-            
-            if (enemy)
-            {
-                // Calculate knockback direction (away from player)
-                Vector3 knockbackDir =  EntityHelper.GetKnockbackDirection(enemy.transform.position, transform.position, 0.4f);
-                // Apply damage and knockback
-                enemy.TakeDamage(amount);
-                enemy.ApplyKnockback(knockbackDir, 40);
-            }
+            IDamageable damageable = collider.GetComponent<IDamageable>();
+            IKnockback knockbackable = collider.GetComponent<IKnockback>();
+
+            // Apply Damage 
+            damageable?.TakeDamage(amount);
+            // Apply Knockback
+            Vector3 knockbackDir =  EntityHelper.GetKnockbackDirection(transform.position, collider.transform.position, 0.4f);
+            knockbackable?.ApplyKnockback(knockbackDir, 50);
         }
-            
-        
     }
+    
+    // Dash
     public void ApplyDashImpulse(Vector3 dir)
     {
         dashCooldownTimer = dashCooldown;
-        dashVelocity = dir.normalized * dashSpeed;
+        dashVelocity += dir.normalized * dashSpeed;
         TakeStamina(dashValue);
         PlayerAudio.PlayDashSound();
+        IsDashing = true;
+    }
+    public void ResetDash()
+    {
+        dashVelocity = Vector3.zero; // IMPORTANT RESET
+        IsDashing = false;
     }
     
-    public Vector3 CaptureDirection()
-    {
-        Vector2 moveInput = InputManager.MoveInput;
-        return moveInput != Vector2.zero ? (Cam.transform.forward * moveInput.y + Cam.transform.right * moveInput.x).normalized : Cam.transform.forward.normalized;
-    }
+    // Other
     private void UpdateGrounded()
     {
         IsGrounded = EntityHelper.IsGrounded(groundCheck.position, groundCheckRadius, out RaycastHit hit, groundCheckDistance, groundMask);
     }
-
-    // private void OnDrawGizmos()
-    // {
-    //     // Grounded sphere
-    //     Gizmos.DrawSphere(groundCheck.position + (Vector3.down * groundCheckDistance), groundCheckRadius);
-    //     // Enemy detect sphere
-    //     Gizmos.DrawWireSphere(groundCheck.position, detectRadius);
-    // }
+    
+    #endregion
+    
+    private static void HitStop() => VFXManager.Instance.TriggerHitStop(0.15f);
+    private void TakeStamina(int amount) => PlayerStamina.TakeStamina(amount);
 
     #region Bools
+    
     // Jump
     private bool CheckWall(out Vector3 wallNormal)
     {
@@ -384,41 +387,25 @@ public class PlayerController : MonoBehaviour, IMoveable
     }
     public bool CanWallJump()
     {
-        if (IsGrounded)
-        {
-            return false;
-        }
-
-        if (CheckWall(out Vector3 normal))
-        {
-            lastWallNormal = normal;
-            if (jumpBufferTimer > 0f)
-            {
-                return true;
-            }
-        }
+        if (IsGrounded) return false;
+        if (!CheckWall(out Vector3 normal)) return false;
         
-        return false;
+        lastWallNormal = normal;
+        return jumpBufferTimer > 0f;
     }
     public bool CanJump()
     {
-        if (jumpBufferTimer > 0f && coyoteTimer > 0f && jumpTimer <= 0f)
-        {
-            jumpBufferTimer = 0f;
-            return true;
-        }
-        return false;
+        if (!(jumpBufferTimer > 0f) || !(coyoteTimer > 0f) || !(jumpTimer <= 0f)) return false;
+        
+        jumpBufferTimer = 0f;
+        return true;
     }
-    
     // Enemy
     public bool EnemyInRange()
     {
         enemyCollider = Physics.OverlapSphere(groundCheck.position, detectRadius, enemyLayer);
-        
-        if (enemyCollider.Length > 0) return true;
-        return false;
+        return enemyCollider.Length > 0;
     }
-
     // Movement
     public bool IsMoving() => MoveMagnitude > 0.01f;
     // Special
@@ -426,4 +413,31 @@ public class PlayerController : MonoBehaviour, IMoveable
     public bool CanDash() => dashCooldownTimer <= 0 && IsMoving() && PlayerStamina.CurrentStamina >= dashValue;
 
     #endregion
+    
+    #region Helpers
+
+    public Vector3 CaptureDirection()
+    {
+        Vector2 moveInput = InputManager.MoveInput;
+        return moveInput != Vector2.zero ? (Cam.transform.forward * moveInput.y + Cam.transform.right * moveInput.x).normalized : Cam.transform.forward.normalized;
+    }
+
+    #endregion
+    
+    #region 
+    
+    private void OnDrawGizmos()
+    {
+        // Grounded sphere
+        Gizmos.DrawSphere(groundCheck.position + (Vector3.down * groundCheckDistance), groundCheckRadius);
+        // Enemy detect sphere
+        Gizmos.DrawWireSphere(groundCheck.position, detectRadius);
+    }
+    
+    #endregion
+
+    public void ApplyKnockback(Vector3 direction, float force)
+    {
+        knockbackVelocity = direction.normalized * force;
+    }
 }

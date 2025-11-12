@@ -13,9 +13,9 @@ MonoBehaviour:
   m_Name: Drone
   m_EditorClassIdentifier: 
   maxHealth: 40
-  moveSpeed: 2
+  moveSpeed: 12
   detectRange: 25
   damage: 5
-  attackRate: 1
-  attackRange: {x: 5, y: 6}
+  attackRate: 2
+  attackRange: {x: 5, y: 25}
   scoreValue: 5

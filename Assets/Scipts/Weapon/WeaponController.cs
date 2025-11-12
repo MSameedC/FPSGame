@@ -1,6 +1,5 @@
 using System;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.VFX;
 using Random = UnityEngine.Random;
@@ -8,25 +7,21 @@ using Random = UnityEngine.Random;
 public class WeaponController : MonoBehaviour
 {
     #region Events
-
-    // Weapon Heat
     public event Action<float, float> OnWeaponHeatChanged;
     public event Action OnWeaponOverheated;
     public event Action OnWeaponCooldown;
-
-    // Weapon Shoot
     public event Action<float> OnRecoilRequested;
     public event Action OnWeaponFired;
-
-    // Weapon Hit
     public event Action<IDamageable> OnTargetHit;
-
     #endregion
     
+    [Header("Trail Settings")]
     [SerializeField] private TrailRenderer trailRenderer;
-    [Space]
+    
+    [Header("Weapon Data")]
     [SerializeField] private UpgradeableWeaponData upgradedWeaponData;
-    [Space]
+    
+    [Header("Visual Effects")]
     [SerializeField] private VisualEffect muzzleFlash;
     [SerializeField] private Transform muzzlePoint;
     [SerializeField] private SliderHandler sliderHandler;
@@ -38,10 +33,6 @@ public class WeaponController : MonoBehaviour
     private bool canCooldown;
     public float CurrentHeat { get; private set; }
     public bool OverHeating => CurrentHeat >= upgradedWeaponData.MaxHeat;
-    
-    // Bullet Trail
-    private const int trailPoolSize = 20;
-    private readonly Queue<TrailRenderer> trailPool = new();
     
     // Audio
     private float lastAudioTime;
@@ -70,39 +61,38 @@ public class WeaponController : MonoBehaviour
         proceduralManager = GetComponent<ProceduralManager>();
         audioSource = GetComponent<AudioSource>();
         InitializeComponents();
-        trailRenderer.gameObject.SetActive(false);
     }
+
     private void Start()
     {
-        InitializeTrailPool();
+        // Initialize the trail system
+        PlayerTrailManager.Initialize(this, trailRenderer);
         
         SetState(new IdleState(this));
         canCooldown = true;
     }
+
     private void Update()
     {
         float delta = Time.deltaTime;
-        // Timer
+        
         if (FireTimer > 0f)
             FireTimer -= delta;
 
         UpdateHeatCooldown(delta);
-
         proceduralManager.SetShooting(IsShooting);
         currentState?.Update(delta);
     }
 
     #endregion
     
-    #region Methods
+    #region Initialization
     
     private void InitializeComponents()
     {
-        // Confirm components are present
         if (!Cam)
         {
             Cam = Camera.main;
-            
             if (!Cam)
             {
                 Debug.LogError("No camera found!", this);
@@ -115,21 +105,12 @@ public class WeaponController : MonoBehaviour
             Debug.LogError("WeaponData is missing!", this);
             return;
         }
-        // Initialize
+        
         CamTransform = Cam.transform;
         baseData = upgradedWeaponData.baseData;
         proceduralManager.SetWeaponData(baseData);
         upgradedWeaponData.Initialize();
-    }
-    private void InitializeTrailPool()
-    {
-        GameObject trailParent = new GameObject("BulletTrailPool");
-        for (int i = 0; i < trailPoolSize; i++)
-        {
-            var trail = Instantiate(trailRenderer, trailParent.transform);
-            trail.gameObject.SetActive(false);
-            trailPool.Enqueue(trail);
-        }
+        trailRenderer.gameObject.SetActive(false);
     }
     
     #endregion
@@ -152,9 +133,7 @@ public class WeaponController : MonoBehaviour
 
     #endregion
 
-    #region Behaviour
-    
-    #region Shoot
+    #region Shooting Logic
     
     public void OnShoot()
     {
@@ -175,22 +154,32 @@ public class WeaponController : MonoBehaviour
         if (Physics.Raycast(origin, direction, out RaycastHit hit, baseData.range))
         {
             hitPoint = hit.point;
-            // Interact
-            var damageable = hit.collider.GetComponent<IDamageable>();
+            
+            IDamageable damageable = hit.collider.GetComponent<IDamageable>();
+            IKnockback knockbackable = hit.collider.GetComponent<IKnockback>();
+            
             if (damageable != null)
             {
-                damageable.TakeDamage((int)upgradedWeaponData.Damage);
+                damageable.TakeDamage(baseData.damage);
                 OnTargetHit?.Invoke(damageable);
             }
+
+            if (knockbackable != null)
+            {
+                Vector3 knockbackDir = EntityHelper.GetKnockbackDirection(transform.position, hit.collider.transform.position, 0);
+                knockbackable.ApplyKnockback(knockbackDir, 5);
+            }
         }
-        // Bullet Trail
-        ShowTrail(muzzlePoint.position, hitPoint);
+        
+        PlayerTrailManager.ShowTrail(muzzlePoint.position, hitPoint);
         if (OverHeating) OnWeaponOverheated?.Invoke();
     }
+    
     public void ResetShooting()
     {
         IsShooting = false;
     }
+    
     private void PlayGunShotFeedback()
     {
         if (CanPlayAudio)
@@ -199,26 +188,22 @@ public class WeaponController : MonoBehaviour
             lastAudioTime = Time.time;
         }
 
-        // Recoil
         OnRecoilRequested?.Invoke(upgradedWeaponData.baseData.recoil.kick);
-        // Procedural Animations
         sliderHandler?.AnimateSlide();
-        // VFX
-        muzzleFlash.transform.position = muzzlePoint.position; // On aim position changes, will need to be updated
+        
+        muzzleFlash.transform.position = muzzlePoint.position;
         muzzleFlash.Play();
     }
     
     #endregion
     
-    #region CoolDown
+    #region Heat Management
     
     private void UpdateHeatCooldown(float delta)
     {
         if (!canCooldown || CurrentHeat <= 0) return;
 
         float cooldownRate = upgradedWeaponData.HeatDecayRate;
-
-        // Faster cooldown when not shooting
         if (!IsShooting) cooldownRate *= 1.5f;
 
         CurrentHeat -= upgradedWeaponData.baseData.heatDecayAmount * cooldownRate * delta;
@@ -227,11 +212,13 @@ public class WeaponController : MonoBehaviour
         OnWeaponHeatChanged?.Invoke(CurrentHeat, upgradedWeaponData.MaxHeat);
         OnWeaponCooldown?.Invoke();
     }
+    
     public void OnCoolDownEnter()
     {
         PlayOneShot(upgradedWeaponData.baseData.sound.overheat);
         canCooldown = false;
     }
+    
     public void OnCoolDownExit()
     {
         canCooldown = true;
@@ -239,62 +226,6 @@ public class WeaponController : MonoBehaviour
     
     #endregion
     
-    #region Procedural Components
-    
-    public void SetSliderLocked(bool locked) => sliderHandler.SetLocked(locked);
-    
-    #endregion
-    
-    #region Effects
-    
-    private void ShowTrail(Vector3 start, Vector3 end)
-    {
-        if (trailPool.Count == 0) return;
-        
-        var trail = trailPool.Dequeue();
-        trail.gameObject.SetActive(true);
-        trail.transform.position = start;
-        
-        StartCoroutine(AnimateTrail(trail, end));
-    }
-    private IEnumerator AnimateTrail(TrailRenderer trail, Vector3 endPoint)
-    {
-        Vector3 startPos = trail.transform.position;
-        float distance = Vector3.Distance(startPos, endPoint);
-        float speed = 100f; // Constant speed in units per second
-        float duration = distance / speed; // Time based on distance
-        
-        float time = 0;
-    
-        while (time < 1)
-        {
-            trail.transform.position = Vector3.Lerp(startPos, endPoint, time);
-            time += Time.deltaTime / duration; // Now duration scales with distance
-            yield return null;
-        }
-    
-        trail.transform.position = endPoint;
-    
-        // Wait for trail to fade naturally
-        yield return new WaitForSeconds(trail.time);
-    
-        // Return to pool
-        trail.Clear();
-        trail.gameObject.SetActive(false);
-        trailPool.Enqueue(trail);
-    }
-    
-    #endregion
-
-    #endregion
-
-    #region Bools
-
-    public bool IsAiming() => InputManager.IsAiming;
-    public bool CanShoot() => FireTimer <= 0f && !OverHeating && InputManager.IsShooting;
-
-    #endregion
-
     #region Helpers
 
     private void PlayOneShot(AudioClip clip)
@@ -302,6 +233,12 @@ public class WeaponController : MonoBehaviour
         audioSource.pitch = Random.Range(1.0f, 1.13f);
         audioSource.PlayOneShot(clip);
     }
+
+    #endregion
+
+    #region Bools
+    
+    public bool CanShoot() => FireTimer <= 0f && !OverHeating && InputManager.IsShooting;
 
     #endregion
 

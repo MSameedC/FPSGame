@@ -32,6 +32,7 @@
     padding-right: 5px;
     padding-bottom: 5px;
     padding-left: 5px;
+    flex-grow: 1;
 }
 
 .health-bar .unity-progress-bar__background {
@@ -112,4 +113,10 @@
     border-right-width: 2px;
     border-bottom-width: 2px;
     border-left-width: 2px;
+}
+
+.prograss-bar .unity-progress-bar__container {
+}
+
+.prograss-bar .unity-progress-bar__progress {
 }

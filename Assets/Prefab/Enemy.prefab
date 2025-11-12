@@ -94,8 +94,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: '::'
   Data: {fileID: 11400000, guid: e0fed1aca8c665741ae5a95e6f9d89fd, type: 2}
+  knockbackWeight: 0.9
   moveSmoothness: 10
   rotationSpeed: 8
+  useGravity: 1
   animator: {fileID: 3521153455405034254}
 --- !u!143 &429694496426526887
 CharacterController:

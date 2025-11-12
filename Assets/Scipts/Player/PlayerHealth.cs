@@ -26,7 +26,7 @@ public class PlayerHealth : MonoBehaviour, IDamageable
 
     public void Heal(int amount)
     {
-        CurrentHealth = Mathf.Min(CurrentHealth + amount, maxHealth);
+        CurrentHealth = Mathf.Min(CurrentHealth + amount, MaxHealth);
         OnHealthChanged?.Invoke(CurrentHealth, MaxHealth);
     }
 
