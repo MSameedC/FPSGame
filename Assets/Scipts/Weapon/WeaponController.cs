@@ -4,6 +4,8 @@ using UnityEngine;
 using UnityEngine.VFX;
 using Random = UnityEngine.Random;
 
+public enum FireMode { Single, Burst, Auto }
+
 public class WeaponController : MonoBehaviour
 {
     #region Events
@@ -14,6 +16,8 @@ public class WeaponController : MonoBehaviour
     public event Action OnWeaponFired;
     public event Action<IDamageable> OnTargetHit;
     #endregion
+    
+    [SerializeField] private FireMode currentFireMode = FireMode.Single;
     
     [Header("Trail Settings")]
     [SerializeField] private TrailRenderer trailRenderer;
@@ -26,9 +30,6 @@ public class WeaponController : MonoBehaviour
     [SerializeField] private Transform muzzlePoint;
     [SerializeField] private SliderHandler sliderHandler;
     [SerializeField] private Animator animator;
-
-    [Header("Flags")]
-    public bool isAutomatic;
 
     // Weapon Heating
     private bool canCooldown;
@@ -43,6 +44,7 @@ public class WeaponController : MonoBehaviour
     // Weapon Shoot
     public float FireTimer { get; private set; }
     public bool IsShooting { get; private set; }
+    public FireMode CurrentFireMode => currentFireMode;
 
     // Components
     private ProceduralManager proceduralManager;
@@ -83,6 +85,7 @@ public class WeaponController : MonoBehaviour
         UpdateHeatCooldown(delta);
         proceduralManager.SetShooting(IsShooting);
         currentState?.Update(delta);
+        Debug.Log(IsShooting);
     }
 
     #endregion
@@ -127,7 +130,7 @@ public class WeaponController : MonoBehaviour
 
     public void SetState(WeaponState newState)
     {
-        currentState?.Exit();
+        currentState?.OnReloadPressed();
         currentState = newState;
         currentState.Enter();
     }
@@ -195,7 +198,24 @@ public class WeaponController : MonoBehaviour
         muzzleFlash.transform.position = muzzlePoint.position;
         muzzleFlash.Play();
         
-        animator.SetTrigger("Shoot");
+        animator.SetTrigger(AnimationName.Shoot);
+    }
+
+    public IEnumerator BurstFire()
+    {
+        int shotsFired = 0;
+        int burstCount = 3;
+
+        while (shotsFired < burstCount && !OverHeating && CanShoot())
+        {
+            OnShoot();
+            shotsFired++;
+            
+            yield return new WaitForSeconds(0.1f);
+        }
+        
+        yield return new WaitUntil(() => !InputManager.IsShooting);
+        SetState(new IdleState(this));
     }
     
     #endregion
@@ -241,7 +261,7 @@ public class WeaponController : MonoBehaviour
 
     #region Bools
     
-    public bool CanShoot() => FireTimer <= 0f && !OverHeating && InputManager.IsShooting;
+    public bool CanShoot() => FireTimer <= 0f && !OverHeating;
 
     #endregion
 

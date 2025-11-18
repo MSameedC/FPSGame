@@ -1,10 +1,14 @@
 using UnityEngine;
 
-public class JumpSway : MonoBehaviour
+public class HeadSway : MonoBehaviour
 {
     [SerializeField] private PlayerController player;
-
-    [Header("Jump / Fall Impact")]
+    
+    [Header("Move Sway")]
+    [SerializeField] private float swayAmount = 0.5f;
+    [SerializeField] private float swayReturnSpeed = 3f;
+    
+    [Header("Jump Sway")]
     [SerializeField] private float impactAmount = 3f;
     [SerializeField] private float impactReturnSpeed = 4f;
 
@@ -28,21 +32,30 @@ public class JumpSway : MonoBehaviour
 
     private void OnDestroy()
     {
-        if (player != null)
-        {
-            player.OnJumped -= () => PlayJumpImpact();
-            player.OnLanded -= () => PlayLandImpact();
-        }
+        if (player == null) return;
+        player.OnJumped -= () => PlayJumpImpact();
+        player.OnLanded -= () => PlayLandImpact();
     }
 
+    private float finalSway;
+    private float finalImpactOffset;
+    
     private void LateUpdate()
     {
         float delta = Time.deltaTime;
+        
         UpdateImpactOffset(delta);
-
-        Quaternion impactRot = Quaternion.Euler(impactPitchOffset, 0f, 0f);
-        float lerpFactor = 1f - Mathf.Exp(-impactReturnSpeed * delta);
-        transform.localRotation = Quaternion.Lerp(transform.localRotation, initialRot * impactRot, lerpFactor);
+        
+        float sway = InputManager.MoveInput.x * swayAmount;
+        float swayLerpFactor = 1f - Mathf.Exp(-swayReturnSpeed * delta);
+        finalSway = Mathf.Lerp(finalSway, -sway, swayLerpFactor);
+        Quaternion targetSway = Quaternion.Euler(0f, 0f, finalSway);
+        
+        float impactLerpFactor = 1f - Mathf.Exp(-impactReturnSpeed * delta);
+        finalImpactOffset = Mathf.Lerp(finalImpactOffset, impactPitchOffset, impactLerpFactor);
+        Quaternion targetImpact = Quaternion.Euler(finalImpactOffset, 0f, 0f);
+        
+        transform.localRotation = initialRot * targetImpact * targetSway;
     }
 
     private void UpdateImpactOffset(float delta)
@@ -57,12 +70,12 @@ public class JumpSway : MonoBehaviour
         );
     }
 
-    public void PlayJumpImpact(float intensity = 1f)
+    private void PlayJumpImpact(float intensity = 1f)
     {
         impactPitchOffset -= impactAmount * intensity;
     }
 
-    public void PlayLandImpact(float intensity = 1f)
+    private void PlayLandImpact(float intensity = 1f)
     {
         impactPitchOffset += impactAmount * intensity;
     }

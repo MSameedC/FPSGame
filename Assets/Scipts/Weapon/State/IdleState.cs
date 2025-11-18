@@ -11,10 +11,9 @@ public class IdleState : WeaponState
             return;
         }
 
-        if (weapon.CanShoot())
+        if (InputManager.IsShooting && weapon.CanShoot())
         {
             weapon.SetState(new ShootState(weapon));
-            return;
         }
 
         // weapon.SetSliderLocked(true);

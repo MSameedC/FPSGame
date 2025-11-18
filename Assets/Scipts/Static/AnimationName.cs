@@ -8,6 +8,7 @@ public static class AnimationName
     public const string Die = "Die";
 
     public const string Attack = "Attack";
+    public const string Shoot = "Shoot";
 
     // Player Specific
     public const string Dash = "Dash";

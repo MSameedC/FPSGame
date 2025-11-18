@@ -40,7 +40,6 @@ public class RecoilHandler : MonoBehaviour, IProceduralEffect
 
     public void Apply(ProceduralRuntimeContext ctx)
     {
-
         if (ctx.isShooting) ApplyRecoil(ctx.isAiming);
 
         float delta = ctx.deltaTime;
@@ -66,7 +65,7 @@ public class RecoilHandler : MonoBehaviour, IProceduralEffect
         transform.localRotation = originalRot * currentRotOffset * zRot;
     }
 
-    public void ApplyRecoil(bool aiming)
+    private void ApplyRecoil(bool aiming)
     {
         float intensity = aiming ? aimRecoilIntensity : recoilIntensity;
         float zClamp = aiming ? zLimit * 0.5f : zLimit;
@@ -91,7 +90,7 @@ public class RecoilHandler : MonoBehaviour, IProceduralEffect
         zRotCurrent += -z * intensity;
     }
 
-    public void SetConfig(WeaponData data)
+    private void SetConfig(WeaponData data)
     {
         // initialize data
         rangeX = data.recoil.recoilX / 10;

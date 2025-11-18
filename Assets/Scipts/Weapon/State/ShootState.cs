@@ -1,70 +1,55 @@
-using UnityEngine;
-
 public class ShootState : WeaponState
 {
     public ShootState(WeaponController weapon) : base(weapon) { }
 
-    private bool queuedNextShot;
-
     public override void Enter()
     {
-        if (!weapon.CanShoot())
+        if (weapon.CurrentFireMode == FireMode.Burst)
         {
-            weapon.SetState(new IdleState(weapon));
-            return;
+            weapon.StartCoroutine(weapon.BurstFire());
         }
-
-        OnShoot(); // fire instantly when entering
+        
+        weapon.OnShoot();
     }
 
     public override void Update(float delta)
     {
-        if (weapon.FireTimer > 0f) return;
-
-        if (weapon.isAutomatic && weapon.IsShooting && weapon.CanShoot())
+        // Check overheating first
+        if (weapon.OverHeating)
         {
-            OnShoot();
+            weapon.SetState(new CooldownState(weapon));
             return;
         }
 
-        if (!weapon.isAutomatic && queuedNextShot && weapon.CanShoot())
-        {
-            OnShoot();
-            queuedNextShot = false;
-            return;
-        }
-
-        // Add safety check to prevent immediate re-entry
-        if (!weapon.IsShooting || weapon.OverHeating || !weapon.CanShoot())
+        // For single/burst modes: exit immediately after shooting once
+        if (!InputManager.IsShooting)
         {
             weapon.SetState(new IdleState(weapon));
+            return;
         }
-    }
 
-
-    public override void OnShootPressed()
-    {
-        if (!weapon.CanShoot()) return;
-        queuedNextShot = true;
-        weapon.ResetShooting();
-    }
-
-    public override void OnShootReleased()
-    {
-        queuedNextShot = false;
-        weapon.ResetShooting();
-    }
-    
-    private void OnShoot()
-    {
-        weapon.OnShoot();
-        queuedNextShot = false;
+        if (weapon.CurrentFireMode == FireMode.Auto)
+        {
+            switch (InputManager.IsShooting)
+            {
+                // Auto mode: keep shooting while holding
+                case true when weapon.CanShoot():
+                    weapon.OnShoot();
+                    break;
+                // Exit auto mode if stopped shooting
+                case false:
+                    weapon.SetState(new IdleState(weapon));
+                    break;
+            }
+        }
+        else
+        {
+            weapon.ResetShooting();
+        }
     }
 
     public override void Exit()
     {
-        queuedNextShot = false;
         weapon.ResetShooting();
     }
 }
-

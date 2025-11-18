@@ -11,6 +11,7 @@ public abstract class WeaponState
 
     public virtual void Enter() { }
     public virtual void Exit() { }
+    public virtual void OnReloadPressed() { }
 
     public virtual void OnShootPressed() { }
     public virtual void OnShootReleased() { }

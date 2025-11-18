@@ -30,7 +30,7 @@ public class CooldownState : WeaponState
         }
     }
 
-    public override void Exit()
+    public override void OnReloadPressed()
     {
         weapon.OnCoolDownExit();
     }
