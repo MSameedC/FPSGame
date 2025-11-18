@@ -37,9 +37,9 @@ public class WaveManager : MonoBehaviour
 
     private void Update()
     {
-        if (PlayerRegistry == null) return;
+        if (!PlayerRegistry) return;
 
-        if (Player == null)
+        if (!Player)
             Player = PlayerRegistry.GetLocalPlayer().PlayerObj.transform;
     }
 
@@ -72,7 +72,7 @@ public class WaveManager : MonoBehaviour
     public IEnumerator WaveCompleteSequence()
     {
         // Show end wave score and kills
-        // yield return new WaveEndSquence() { }
+        // yield return new WaveEndSequence() { }
 
         // Once that sequence is completed then show upgrade menu
         float upgradeDelay = 3.75f;

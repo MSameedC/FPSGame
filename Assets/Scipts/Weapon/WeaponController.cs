@@ -25,6 +25,7 @@ public class WeaponController : MonoBehaviour
     [SerializeField] private VisualEffect muzzleFlash;
     [SerializeField] private Transform muzzlePoint;
     [SerializeField] private SliderHandler sliderHandler;
+    [SerializeField] private Animator animator;
 
     [Header("Flags")]
     public bool isAutomatic;
@@ -193,6 +194,8 @@ public class WeaponController : MonoBehaviour
         
         muzzleFlash.transform.position = muzzlePoint.position;
         muzzleFlash.Play();
+        
+        animator.SetTrigger("Shoot");
     }
     
     #endregion

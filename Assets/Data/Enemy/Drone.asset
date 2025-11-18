@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxHealth: 40
   moveSpeed: 12
-  detectRange: 25
+  detectRange: 30
   damage: 5
   attackRate: 2
   attackRange: {x: 5, y: 25}

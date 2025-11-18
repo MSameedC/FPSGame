@@ -14,11 +14,11 @@ public class EnemyHurtState : BaseState
         if (enemy.useGravity)
         {
             if (!enemy.IsGrounded) return;
-            enemy.SetState(new EnemyGroundedState(enemy));
+            enemy.SetState(new EnemyPatrolState(enemy));
         }
         else
         {
-            enemy.SetState(new EnemyGroundedState(enemy));
+            enemy.SetState(new EnemyPatrolState(enemy));
         }
     }
 }

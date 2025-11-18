@@ -10,15 +10,8 @@ public class PlayerRegistry : MonoBehaviour
 
     private void Awake()
     {
-        if (Instance == null)
-        {
-            Instance = this;
-            DontDestroyOnLoad(gameObject); // Keep between scenes if needed
-        }
-        else
-        {
-            Destroy(gameObject);
-        }
+        if (Instance != null) return;
+        Instance = this;
     }
 
     // Add player to registry with auto-generated ID

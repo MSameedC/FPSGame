@@ -21,17 +21,9 @@ public class AudioManager : MonoBehaviour
     
     private void Awake()
     {
-        // Singleton pattern
-        if (Instance == null)
-        {
-            Instance = this;
-            DontDestroyOnLoad(gameObject);
-            InitializeAudioSources();
-        }
-        else
-        {
-            Destroy(gameObject);
-        }
+        if (Instance != null) return;
+        Instance = this;
+        InitializeAudioSources();
     }
     
     private void InitializeAudioSources()

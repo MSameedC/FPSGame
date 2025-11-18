@@ -1,122 +1,116 @@
 :root {
+    -unity-background-scale-mode: stretch-to-fill;
 }
 
 .background {
-    background-color: rgba(0, 0, 0, 0.59);
-    border-top-left-radius: 15px;
-    border-top-right-radius: 15px;
-    border-bottom-right-radius: 15px;
-    border-bottom-left-radius: 15px;
+    background-color: rgba(19, 19, 19, 0.63);
+    border-radius: 15px;
+    -unity-overflow-clip-box: padding-box;
 }
 
 .text {
     color: rgb(255, 255, 255);
     -unity-font-style: bold;
     -unity-text-align: upper-center;
-    padding-top: 0;
-    padding-right: 0;
-    padding-bottom: 0;
-    padding-left: 0;
-    margin-top: 5px;
-    margin-right: 5px;
-    margin-bottom: 5px;
-    margin-left: 5px;
+    padding: 0;
+    margin: 5px;
 }
 
 .health-bar {
-    margin-top: 0;
-    margin-right: 0;
-    margin-bottom: 0;
-    margin-left: 0;
-    padding-top: 5px;
-    padding-right: 5px;
-    padding-bottom: 5px;
-    padding-left: 5px;
+    margin: 0;
+    padding: 5px;
     flex-grow: 1;
+    height: 35px;
+    min-height: 35px;
 }
 
 .health-bar .unity-progress-bar__background {
-    border-left-color: rgb(130, 197, 87);
-    border-right-color: rgb(130, 197, 87);
-    border-top-color: rgb(130, 197, 87);
-    border-bottom-color: rgb(130, 197, 87);
+    border-color: rgb(130, 197, 87);
+    -unity-background-image-tint-color: rgb(130, 197, 87);
 }
 
 .health-bar .unity-progress-bar__progress {
     background-color: rgb(130, 197, 87);
+    -unity-background-image-tint-color: rgb(130, 197, 87);
 }
 
 .stamina-bar {
-    margin-top: 0;
-    margin-right: 0;
-    margin-bottom: 0;
-    margin-left: 0;
-    padding-top: 5px;
-    padding-right: 5px;
-    padding-bottom: 5px;
-    padding-left: 5px;
+    margin: 0;
+    padding: 5px;
+    height: 35px;
+    min-height: 35px;
 }
 
 .stamina-bar .unity-progress-bar__background {
-    border-left-color: rgb(47, 190, 204);
-    border-right-color: rgb(47, 190, 204);
-    border-top-color: rgb(47, 190, 204);
-    border-bottom-color: rgb(47, 190, 204);
+    border-color: rgb(47, 190, 204);
+    -unity-background-image-tint-color: rgb(47, 190, 204);
 }
 
 .stamina-bar .unity-progress-bar__progress {
     background-color: rgb(47, 190, 204);
+    -unity-background-image-tint-color: rgb(47, 190, 204);
 }
 
 .heat-bar {
-    margin-top: 0;
-    margin-right: 0;
-    margin-bottom: 0;
-    margin-left: 0;
-    padding-top: 5px;
-    padding-right: 5px;
-    padding-bottom: 5px;
-    padding-left: 5px;
+    margin: 0;
+    padding: 5px;
+    height: 35px;
+    min-height: 35px;
 }
 
 .heat-bar .unity-progress-bar__background {
     background-color: rgba(0, 0, 0, 0);
-    border-left-color: rgb(204, 99, 47);
-    border-right-color: rgb(204, 99, 47);
-    border-top-color: rgb(204, 99, 47);
-    border-bottom-color: rgb(204, 99, 47);
+    border-color: rgb(204, 99, 47);
+    -unity-background-image-tint-color: rgb(204, 99, 47);
 }
 
 .heat-bar .unity-progress-bar__progress {
     background-color: rgb(204, 99, 47);
+    -unity-background-image-tint-color: rgb(204, 99, 47);
 }
 
-.prograss-bar {
-    margin-top: 0;
-    margin-right: 0;
-    margin-bottom: 0;
-    margin-left: 0;
-    padding-top: 5px;
-    padding-right: 5px;
-    padding-bottom: 5px;
-    padding-left: 5px;
+.progress-bar {
+    margin: 0;
+    padding: 5px;
     background-color: rgba(0, 0, 0, 0);
+    height: 35px;
+    min-height: 20px;
+    max-height: 35px;
+    justify-content: center;
+    width: 95%;
+    align-self: center;
+    -unity-overflow-clip-box: padding-box;
 }
 
-.prograss-bar .unity-progress-bar__background {
+.progress-bar .unity-progress-bar__background {
     background-color: rgb(84, 84, 84);
-    border-top-left-radius: 5px;
-    border-top-right-radius: 5px;
-    border-bottom-right-radius: 5px;
-    border-bottom-left-radius: 5px;
-    border-top-width: 2px;
-    border-right-width: 2px;
-    border-bottom-width: 2px;
-    border-left-width: 2px;
+    border-radius: 5px;
+    border-width: 2px;
+    height: 100%;
+    min-height: 100%;
+    -unity-background-image-tint-color: rgb(84, 84, 84);
 }
 
-.prograss-bar .unity-progress-bar__container {
+.progress-bar .unity-progress-bar__container {
+    height: 100%;
+    min-height: 100%;
+    flex-grow: 1;
 }
 
-.prograss-bar .unity-progress-bar__progress {
+.progress-bar .unity-progress-bar__progress {
+    height: 100%;
+    min-height: 100%;
+    border-radius: 3px;
+}
+
+.progress-bar .unity-progress-bar__title {
+    height: 100%;
+    justify-content: center;
+    align-items: center;
+    -unity-text-align: middle-center;
+    color: white;
+    font-size: 12px;
+    -unity-font-style: bold;
+    align-self: center;
+    opacity: 1;
 }

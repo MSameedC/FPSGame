@@ -3,12 +3,6 @@ using UnityEngine;
 
 public class Turret : EnemyBase
 {
-    private float bufferTimer = 0;
-    private float patrolTimer = 0;
-    private float waitTimer = 0;
-
-    private bool attackAnimationFinished = true;
-
     private Vector3 velocity;
     private Vector3 randomDir;
     
@@ -37,17 +31,6 @@ public class Turret : EnemyBase
         
     }
 
-    public override bool IsAttackComplete()
-    {
-        return attackAnimationFinished;
-    }
-
-    public override void ResetAttackData()
-    {
-        base.ResetAttackData();
-        attackAnimationFinished = false;
-    }
-
     #endregion
 
     #region Movement
@@ -66,46 +49,6 @@ public class Turret : EnemyBase
         Vector3 finalMovement = new Vector3(horizontalVelocity.x, velocity.y, horizontalVelocity.z);
         
         moveVelocity = finalMovement;
-    }
-    
-    public override void Patrol(float delta)
-    {
-        // Handle direction change
-        if (bufferTimer <= 0)
-        {
-            randomDir = GetRandomDirection();
-            bufferTimer = Random.Range(2f, 6f);
-        }
-        else
-        {
-            bufferTimer -= delta;
-        }
-
-        // Patrol state machine
-        if (patrolTimer > 0)
-        {
-            patrolTimer -= delta;
-            MoveTo(randomDir, delta);
-            LookAt(delta, randomDir);
-
-            if (!(patrolTimer <= 0)) return;
-            waitTimer = Random.Range(2f, 6f);
-            Stop();
-        }
-        else if (waitTimer > 0)
-        {
-            waitTimer -= delta;
-            Stop();
-
-            if (waitTimer <= 0)
-            {
-                patrolTimer = Random.Range(2f, 6f);
-            }
-        }
-        else
-        {
-            patrolTimer = Random.Range(2f, 6f);
-        }
     }
 
     #endregion

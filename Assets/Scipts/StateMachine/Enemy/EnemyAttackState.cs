@@ -15,22 +15,14 @@ public class EnemyAttackState : BaseState
         // Wait for attack to complete
         if (!enemy.IsAttackComplete()) return;
         
-        // Update movement i.e rotation after attack
-        enemy.UpdateAttackPosition(delta);
+        // Update movement i.e. rotation after attack
+        enemy.LookAt(enemy.GetPredictedDirectionToPlayer(), delta);
         
         // Attack finished - check what to do next
-        if (!enemy.IsInAttackRange())
+        if (!enemy.IsInAttackRange() || enemy.CanAttack())
         {
-            enemy.SetState(new EnemyGroundedState(enemy));
+            enemy.SetState(new EnemyChaseState(enemy));
         }
-        else
-        {
-            // Player still in range - start new attack after cooldown
-            if (enemy.CanAttack())
-            {
-                enemy.SetState(new EnemyAttackState(enemy));
-            }
-            // Otherwise wait in this state until cooldown finishes
-        }
+
     }
 }
