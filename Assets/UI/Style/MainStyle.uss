@@ -3,7 +3,7 @@
 }
 
 .background {
-    background-color: rgba(19, 19, 19, 0.63);
+    background-color: rgba(0, 0, 0, 0.71);
     border-radius: 15px;
     -unity-overflow-clip-box: padding-box;
 }
@@ -83,12 +83,11 @@
 }
 
 .progress-bar .unity-progress-bar__background {
-    background-color: rgb(84, 84, 84);
+    background-color: rgba(255, 255, 255, 0.12);
     border-radius: 5px;
     border-width: 2px;
     height: 100%;
     min-height: 100%;
-    -unity-background-image-tint-color: rgb(84, 84, 84);
 }
 
 .progress-bar .unity-progress-bar__container {

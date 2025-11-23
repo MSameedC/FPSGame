@@ -12,10 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cefdf491fdb951e419f84e441054d4bb, type: 3}
   m_Name: Drone
   m_EditorClassIdentifier: 
-  maxHealth: 40
-  moveSpeed: 12
-  detectRange: 30
+  maxHealth: 80
+  moveSpeed: 15
+  detectRange: 50
   damage: 5
   attackRate: 2
-  attackRange: {x: 5, y: 25}
+  attackRange: {x: 10, y: 20}
   scoreValue: 5

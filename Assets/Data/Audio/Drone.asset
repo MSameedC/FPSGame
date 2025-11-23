@@ -1,0 +1,18 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6570445b531e7ba25b00c4935a4f74f1, type: 3}
+  m_Name: Drone
+  m_EditorClassIdentifier: Assembly-CSharp::AudioData
+  spawn: {fileID: 8300000, guid: f9427a61f3dcbed0f8f4e28137f9b888, type: 3}
+  attack: {fileID: 8300000, guid: 8da5975d19d4f7163b7b3b73151d029f, type: 3}
+  hurt: {fileID: 8300000, guid: 202a3d69edef0463f8eaba7304fb74dc, type: 3}
+  death: {fileID: 8300000, guid: 8da5975d19d4f7163b7b3b73151d029f, type: 3}

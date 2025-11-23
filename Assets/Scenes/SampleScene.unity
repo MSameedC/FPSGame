@@ -761,6 +761,11 @@ MonoBehaviour:
   groundLayer:
     serializedVersion: 2
     m_Bits: 64
+--- !u!4 &903137088 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 3845127321869036120, guid: 43cffa8a265abd146ba5a0a003c93f4e, type: 3}
+  m_PrefabInstance: {fileID: 8988374167745806901}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &919024460
 GameObject:
   m_ObjectHideFlags: 0
@@ -801,8 +806,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1136301042}
-  - component: {fileID: 1136301044}
   - component: {fileID: 1136301043}
+  - component: {fileID: 1136301044}
   m_Layer: 0
   m_Name: UpgradeManager
   m_TagString: Untagged
@@ -879,7 +884,7 @@ GameObject:
   - component: {fileID: 1217249824}
   - component: {fileID: 1217249823}
   - component: {fileID: 1217249822}
-  m_Layer: 6
+  m_Layer: 3
   m_Name: Cube
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -987,7 +992,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1443289079}
-  m_Layer: 6
+  m_Layer: 3
   m_Name: Platform
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1041,6 +1046,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: '::'
   enemyPrefab:
   - {fileID: 3700093183882700622, guid: f3e0e84a985d66744affdb22aece3a6d, type: 3}
+  - {fileID: 9192689883023297194, guid: 791809cc15446f646950d90a0f4e6d8c, type: 3}
   bulletPrefab: {fileID: 1084249187110805435, guid: d17e283453e50149e92e017a82ffa86a, type: 3}
 --- !u!4 &1448313734
 Transform:
@@ -1341,25 +1347,69 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 4711086599782318979, guid: 43cffa8a265abd146ba5a0a003c93f4e, type: 3}
-      propertyPath: currentFireMode
+    - target: {fileID: 6096756882073919893, guid: 43cffa8a265abd146ba5a0a003c93f4e, type: 3}
+      propertyPath: m_Enabled
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6638784322070974118, guid: 43cffa8a265abd146ba5a0a003c93f4e, type: 3}
+      propertyPath: DashHit
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6638784322070974118, guid: 43cffa8a265abd146ba5a0a003c93f4e, type: 3}
+      propertyPath: dashValue
+      value: 40
+      objectReference: {fileID: 0}
+    - target: {fileID: 6638784322070974118, guid: 43cffa8a265abd146ba5a0a003c93f4e, type: 3}
+      propertyPath: slamValue
+      value: 60
+      objectReference: {fileID: 0}
+    - target: {fileID: 6638784322070974118, guid: 43cffa8a265abd146ba5a0a003c93f4e, type: 3}
+      propertyPath: dashCooldown
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6638784322070974118, guid: 43cffa8a265abd146ba5a0a003c93f4e, type: 3}
+      propertyPath: dashHitCheck
+      value: 
+      objectReference: {fileID: 903137088}
+    - target: {fileID: 6638784322070974118, guid: 43cffa8a265abd146ba5a0a003c93f4e, type: 3}
+      propertyPath: detectRadius
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 6638784322070974118, guid: 43cffa8a265abd146ba5a0a003c93f4e, type: 3}
+      propertyPath: wallJumpDecay
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 6638784322070974118, guid: 43cffa8a265abd146ba5a0a003c93f4e, type: 3}
+      propertyPath: enemyRepelForce
+      value: 80
+      objectReference: {fileID: 0}
+    - target: {fileID: 6638784322070974118, guid: 43cffa8a265abd146ba5a0a003c93f4e, type: 3}
+      propertyPath: wallMask.m_Bits
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 6638784322070974118, guid: 43cffa8a265abd146ba5a0a003c93f4e, type: 3}
+      propertyPath: playerRepelForce
+      value: 50
+      objectReference: {fileID: 0}
+    - target: {fileID: 6638784322070974118, guid: 43cffa8a265abd146ba5a0a003c93f4e, type: 3}
+      propertyPath: enemyLayer.m_Bits
+      value: 64
+      objectReference: {fileID: 0}
+    - target: {fileID: 6638784322070974118, guid: 43cffa8a265abd146ba5a0a003c93f4e, type: 3}
+      propertyPath: groundMask.m_Bits
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 6638784322070974118, guid: 43cffa8a265abd146ba5a0a003c93f4e, type: 3}
+      propertyPath: bulletLayer.m_Bits
+      value: 128
+      objectReference: {fileID: 0}
+    - target: {fileID: 6638784322070974118, guid: 43cffa8a265abd146ba5a0a003c93f4e, type: 3}
+      propertyPath: wallJumpVerticalForce
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 8233145124240534301, guid: 43cffa8a265abd146ba5a0a003c93f4e, type: 3}
       propertyPath: m_Name
       value: Player
-      objectReference: {fileID: 0}
-    - target: {fileID: 9098334297923252022, guid: 43cffa8a265abd146ba5a0a003c93f4e, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 0.92387956
-      objectReference: {fileID: 0}
-    - target: {fileID: 9098334297923252022, guid: 43cffa8a265abd146ba5a0a003c93f4e, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: -0.38268343
-      objectReference: {fileID: 0}
-    - target: {fileID: 9098334297923252022, guid: 43cffa8a265abd146ba5a0a003c93f4e, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: -45
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
