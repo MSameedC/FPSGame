@@ -1,6 +1,6 @@
 public class IdleState : WeaponState
 {
-    public IdleState(WeaponController weapon) : base(weapon) { }
+    public IdleState(WeaponBase weapon) : base(weapon) { }
 
     public override void Update(float delta)
     {

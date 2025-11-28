@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7d24d19e78f33db43b35aa8657157d2b, type: 3}
   m_Name: Default
   m_EditorClassIdentifier: Assembly-CSharp::WeaponData
-  damage: 10
+  damage: 20
   fireRate: 0.2
   range: 200
   heatAddAmount: 5

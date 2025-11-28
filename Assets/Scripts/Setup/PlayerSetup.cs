@@ -9,7 +9,7 @@ public class PlayerSetup : MonoBehaviour
     private PlayerHealth health;
     private int playerId;
 
-    public PlayerData Data { get; private set; }
+    private PlayerData Data;
 
     // ---
 

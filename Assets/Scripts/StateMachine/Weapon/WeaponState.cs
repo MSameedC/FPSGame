@@ -2,8 +2,8 @@ using UnityEngine;
 
 public abstract class WeaponState : SystemState
 {
-    protected readonly WeaponController weapon;
-    protected WeaponState(WeaponController weapon)
+    protected readonly WeaponBase weapon;
+    protected WeaponState(WeaponBase weapon)
     {
         this.weapon = weapon;
     }

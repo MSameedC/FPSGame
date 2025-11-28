@@ -3,12 +3,11 @@ using UnityEngine;
 
 public class Drone : EnemyBase
 {
+    [Header("Hover")]
     [SerializeField] private float hoverHeight = 3f;
     [SerializeField] private float heightSmoothTime = 0.5f;
-    [Space]
-    [SerializeField] private float bulletSpeed = 30f;
-    [SerializeField] private float knockbackForce = 10f;
-    [SerializeField] private GameObject bulletPrefab;
+    [Header("Bullet Data")]
+    [SerializeField] private BulletData bulletData;
     [Space]
     [SerializeField] private Transform muzzle;
 
@@ -20,8 +19,7 @@ public class Drone : EnemyBase
 
     private void Awake()
     {
-        Bullet bullet = bulletPrefab.GetComponent<Bullet>();
-        bullet.Initialize(Data.damage, 50, 5, Vector3.forward);
+        bulletData.damage = enemyData.damage;
     }
 
     protected override void LateUpdate()
@@ -37,7 +35,7 @@ public class Drone : EnemyBase
         base.MoveTo(direction, delta);
 
         // Horizontal Movement
-        Vector3 targetVelocity = new Vector3(direction.x, 0, direction.z) * Data.moveSpeed;
+        Vector3 targetVelocity = new Vector3(direction.x, 0, direction.z) * enemyData.moveSpeed;
         Vector3 horizontalVelocity = new Vector3(targetVelocity.x, 0, targetVelocity.z);
         moveVelocity = Vector3.Lerp(moveVelocity, horizontalVelocity, delta * moveSmoothness);
     }
@@ -51,7 +49,7 @@ public class Drone : EnemyBase
         float newY = Mathf.SmoothDamp(transform.position.y, targetHeight, ref velocity.y, heightSmoothTime);
         // Use CharacterController.Move for the vertical movement to avoid conflicts
         float verticalMovement = newY - transform.position.y;
-        CharacterController.Move(new Vector3(0, verticalMovement, 0));
+        cc.Move(Vector3.up * verticalMovement);
     }
 
     private float GetGroundHeight()
@@ -68,7 +66,7 @@ public class Drone : EnemyBase
     public override void Attack()
     {
         Vector3 direction = GetPredictedDirectionToPlayer();
-        enemyManager.SpawnBullet(muzzle.position, direction, Data.damage, bulletSpeed, knockbackForce);
+        projectileManager.SpawnBullet(muzzle.position, direction, bulletData);
     }
 
     #endregion
@@ -77,8 +75,8 @@ public class Drone : EnemyBase
 
     protected override IEnumerator WaitForDeathCompletion()
     {
+        // Play explosion effects
         yield return null;
-        gameObject.SetActive(false);
     }
 
     public override void OnDeathEnter()

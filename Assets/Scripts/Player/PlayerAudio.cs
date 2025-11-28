@@ -25,9 +25,9 @@ public class PlayerAudio : MonoBehaviour
     private void Start()
     {
         AudioManager = AudioManager.Instance;
-        player.OnSlamImpact += () => AudioManager.PlaySFX(slamSound);
-        player.OnLanded += () => AudioManager.PlaySFX(landSound);
-        player.OnDash += () => AudioManager.PlaySFX(dashSound);
+        player.OnSlamImpact += () => PlayOneShot(slamSound);
+        player.OnLanded += () => PlayOneShot(landSound);
+        player.OnDash += () => PlayOneShot(dashSound);
     }
 
     private void Update()
@@ -45,11 +45,16 @@ public class PlayerAudio : MonoBehaviour
         if (stepTimer < 0)
         {
             stepTimer = stepInterval;
-            AudioManager.PlaySFX(footstepSound, 1, 1, 1.2f);
+            PlayOneShot(footstepSound, 1, 1, 1.2f);
         }
         else
         {
             stepTimer -= delta;
         }
+    }
+
+    private void PlayOneShot(AudioClip clip, float volume = 1f, float minPitch  = 1f, float maxPitch  = 1f)
+    {
+        AudioManager.PlaySFX(clip, transform.position, Quaternion.identity, volume, minPitch, maxPitch);
     }
 }

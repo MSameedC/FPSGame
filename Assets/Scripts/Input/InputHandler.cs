@@ -72,4 +72,12 @@ public class InputHandler : MonoBehaviour
             InputManager.IsDashing = false;
         }
     }
+
+    public void SwitchBullet(InputAction.CallbackContext context)
+    {
+        if (context.started)
+        {
+            InputManager.InvokeBulletSwitch();
+        }
+    }
 }

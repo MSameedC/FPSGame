@@ -4,20 +4,20 @@ using UnityEngine;
 public class ShootState : WeaponState
 {
     private Coroutine burstCoroutine;
-    private int burstSize = 3;
-    private float burstDelay = 0.1f;
+    private readonly int burstSize = 3;
+    private readonly float burstDelay = 0.1f;
     
-    public ShootState(WeaponController weapon) : base(weapon) { }
+    public ShootState(WeaponBase weapon) : base(weapon) { }
 
     public override void Enter()
     {
-        if (weapon.CurrentFireMode == FireMode.Burst)
+        if (weapon.CurrentFireMode == EnumManager.FireMode.Burst)
         {
             weapon.StartCoroutine(BurstFireRoutine());
             return;
         }
         
-        weapon.OnShoot();
+        Shoot();
     }
 
     public override void Update(float delta)
@@ -29,11 +29,11 @@ public class ShootState : WeaponState
             return;
         }
 
-        if (weapon.CurrentFireMode == FireMode.Auto)
+        if (weapon.CurrentFireMode == EnumManager.FireMode.Auto)
         {
             if (InputManager.IsShooting && weapon.CanShoot())
             {
-                weapon.OnShoot();
+                Shoot();
                 return;
             }
         }
@@ -56,7 +56,7 @@ public class ShootState : WeaponState
 
         while (shotsFired < burstSize && !weapon.OverHeating)
         {
-            weapon.OnShoot();
+            Shoot();
             shotsFired++;
             
             yield return new WaitForSeconds(burstDelay);
@@ -65,5 +65,11 @@ public class ShootState : WeaponState
         yield return new WaitUntil(() => !InputManager.IsShooting);
         weapon.ResetShooting();
         weapon.SetState(new IdleState(weapon));
+    }
+
+    private void Shoot()
+    {
+        weapon.OnShoot();
+        weapon.PerformShoot();
     }
 }

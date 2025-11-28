@@ -92,6 +92,12 @@ public class RecoilHandler : MonoBehaviour, IProceduralEffect
 
     private void SetConfig(WeaponData data)
     {
+        if (data == null)
+        {
+            Debug.LogError("WeaponData is null in RecoilHandler!");
+            return;
+        }
+        
         // initialize data
         rangeX = data.recoil.recoilX / 10;
         rangeY = data.recoil.recoilY / 10;

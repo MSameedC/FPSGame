@@ -40,11 +40,17 @@ public class PlayerController : MonoBehaviour, IMoveable, IKnockback
     [SerializeField] private Transform groundCheck;
     
     [Header("Enemy Check")]
-    [SerializeField] private float detectRadius = 5f;
+    [SerializeField] private float dashRadius = 1f;
+    [SerializeField] private float slamRadius = 5f;
+    [Space]
     [SerializeField] private LayerMask enemyLayer;
     [SerializeField] private LayerMask bulletLayer;
-    [SerializeField] private Transform dashHitCheck;
     [Space]
+    [SerializeField] private Transform dashHitCheck;
+    
+    [Header("Enemy Hit")]
+    [SerializeField] private int slamDamage = 50;
+    [SerializeField] private int dashDamage = 40;
     [SerializeField] private float playerRepelForce = 60f;
     [SerializeField] private float enemyRepelForce = 100f;
 
@@ -52,37 +58,37 @@ public class PlayerController : MonoBehaviour, IMoveable, IKnockback
     private float slamTimer;
     private float jumpTimer;
     private float coyoteTimer;
-    private float currentSpeed;
     private float jumpBufferTimer;
     private float dashCooldownTimer;
-
-    // Float
-    private float currentSmoothSpeed;
-    private float acceleration;
-
+    
+    // Movement
     public float DashDuration => dashDuration;
     public float MoveMagnitude { get; private set; }
+    public bool DashHit { get; private set; }
+    
+    private float currentSpeed;
+    private bool IsSlamming;
+    private bool IsDashing;
 
     // Vectors
+    private Vector2 moveInput;
     private Vector3 dashVelocity;
     private Vector3 inputVelocity;
     private Vector3 finalVelocity;
     private Vector3 lastWallNormal;
     private Vector3 wallJumpVelocity;
     private Vector3 knockbackVelocity;
-    
-    private bool IsSlamming;
 
     // Ground info
-    public bool IsGrounded { get; private set; }
+    private float gravityVelocity;
     private Vector3 GroundNormal;
-
-    private float velocityY;
-    private bool IsDashing;
     
-    private PlayerStamina PlayerStamina { get; set; }
+    public bool IsGrounded { get; private set; }
 
     // Components
+    private PlayerStamina PlayerStamina { get; set; }
+    
+    private VFXManager VfxManager;
     private PlayerState currentState;
     private CharacterController CC;
     private Transform Player;
@@ -108,6 +114,7 @@ public class PlayerController : MonoBehaviour, IMoveable, IKnockback
     {
         Player = transform;
         Cam = Camera.main;
+        VfxManager = VFXManager.Instance;
 
         // Subscribe to input events
         InputManager.OnJumpPressed += OnJumpInput;
@@ -128,7 +135,6 @@ public class PlayerController : MonoBehaviour, IMoveable, IKnockback
     private void Update()
     {
         float delta = Time.deltaTime;
-
         UpdateGrounded();
 
         // TIMERS COME FIRST!
@@ -145,39 +151,22 @@ public class PlayerController : MonoBehaviour, IMoveable, IKnockback
 
         // State update
         currentState?.Update(delta);
-
         // Update gravity
         ApplyGravity(delta);
-
         // Set timer
         if (IsGrounded)
         {
             wallJumpVelocity = Vector3.zero;
             coyoteTimer = coyoteTime;
         }
-        
-        Debug.Log(currentState);
     }
 
     private void LateUpdate()
     {
         float delta = Time.deltaTime;
-
+        moveInput = InputManager.MoveInput;
         currentState?.LateUpdate(delta);
-        
-        // Safety check for NaN position
-        if (float.IsNaN(transform.position.x) || float.IsNaN(transform.position.y) || float.IsNaN(transform.position.z))
-        {
-            Debug.LogError("Player position corrupted! Resetting...");
-            transform.position = Vector3.up * 2f; // Reset above ground
-            finalVelocity = Vector3.zero;
-            inputVelocity = Vector3.zero;
-            wallJumpVelocity = Vector3.zero;
-            knockbackVelocity = Vector3.zero;
-            velocityY = 0f;
-        }
-        
-        MoveTo(InputManager.MoveInput, delta);
+        MoveTo(moveInput, delta);
     }
 
     #endregion
@@ -204,38 +193,36 @@ public class PlayerController : MonoBehaviour, IMoveable, IKnockback
     {
         if (IsDashing) return;
 
-        if (IsGrounded && velocityY < 0)
+        if (IsGrounded && gravityVelocity < 0)
         {
-            velocityY = GravityData.groundStickForce;
+            gravityVelocity = GravityData.groundStickForce;
             return;
         }
 
-        float gravityMultiplier = ((velocityY < 0.1f) ? GravityData.fallStrength : 1f) * GravityData.gravity;
-        velocityY += gravityMultiplier * delta;
+        float gravityMultiplier = ((gravityVelocity < 0.1f) ? GravityData.fallStrength : 1f) * GravityData.gravity;
+        gravityVelocity += gravityMultiplier * delta;
     }
     
     // Move
     public void MoveTo(Vector3 input, float delta)
     {
-        acceleration = IsGrounded ? groundAcc : airAcc;
-        
         if (IsDashing || IsSlamming)
         {
-            Vector3 finalMove = dashVelocity + Vector3.up * velocityY;
+            Vector3 finalMove = dashVelocity + Vector3.up * gravityVelocity;
             CC.Move(finalMove * delta);
             return;
         }
 
         // 1. Handle primary movement input
-        Vector2 moveInput = input;
-        float targetSpeed = moveInput.magnitude > 0 ? walkSpeed : 0;
+        float targetSpeed = input.magnitude > 0 ? walkSpeed : 0;
         currentSpeed = targetSpeed;
 
-        Vector3 moveDirection = Player.forward * moveInput.y + Player.right * moveInput.x;
+        Vector3 moveDirection = Player.forward * input.y + Player.right * moveInput.x;
         Vector3 targetVelocity = moveDirection * currentSpeed;
     
         // Only apply drag when NOT providing input
-        if (moveInput.magnitude < 0.1f)
+        float acceleration = IsGrounded ? groundAcc : airAcc;
+        if (input.magnitude < 0.1f)
             inputVelocity = Vector3.Lerp(inputVelocity, Vector3.zero, 10 * delta);
         else
             inputVelocity = Vector3.MoveTowards(inputVelocity, targetVelocity, acceleration * delta);
@@ -264,36 +251,35 @@ public class PlayerController : MonoBehaviour, IMoveable, IKnockback
         MoveMagnitude = Mathf.InverseLerp(0f, dashSpeed, rawSpeed);
 
         // 4. Combine all velocities
-        finalVelocity = inputVelocity + knockbackVelocity + wallJumpVelocity + Vector3.up * velocityY;
-
-        // 5. Final NaN safety check
-        if (float.IsNaN(finalVelocity.x) || float.IsNaN(finalVelocity.y) || float.IsNaN(finalVelocity.z)) {
-            Debug.LogError("NaN detected in finalVelocity! Resetting.");
-            finalVelocity = Vector3.zero;
-            inputVelocity = Vector3.zero;
-            wallJumpVelocity = Vector3.zero; 
-            knockbackVelocity = Vector3.zero;
-            velocityY = 0f;
-        }
-
+        finalVelocity = inputVelocity + knockbackVelocity + wallJumpVelocity + Vector3.up * gravityVelocity;
+        
+        // 5. Perform Movement
         CC.Move(finalVelocity * delta);
     }
     
     // Jump
     public void PerformJump()
     {
-        velocityY = Mathf.Sqrt(-GravityData.gravity * jumpHeight);
+        // Perform Jump
+        gravityVelocity = jumpHeight;
+        // Update Data
         jumpTimer = jumpCooldown;
-        coyoteTimer = 0f; // Consume coyote time
+        coyoteTimer = 0f;
+        // Event
         OnJumped?.Invoke();
     }
     public void PerformWallJump()
     {
-        velocityY = Mathf.Sqrt(-GravityData.gravity * wallJumpVerticalForce);
+        // Apply Vertical Velocity
+        gravityVelocity = wallJumpVerticalForce;
+        // Calculate Horizontal Velocity
         Vector3 pushDir = lastWallNormal + Vector3.up * 0.2f;
         pushDir.Normalize();
+        // Perform Wall Jump
         wallJumpVelocity = pushDir * wallJumpHorizontalForce;
+        // Update Data
         jumpTimer = jumpCooldown;
+        // Event
         OnJumped?.Invoke();
     }
     public void OnLand() => OnLanded?.Invoke();
@@ -302,85 +288,100 @@ public class PlayerController : MonoBehaviour, IMoveable, IKnockback
     public void ApplySlamStart()
     {
         // Perform Slam
-        velocityY = -slamForce;
+        gravityVelocity = -slamForce;
         // Reset Cooldown
         slamTimer = slamCooldown;
         // Update stamina
         TakeStamina(slamValue);
+        // Update Data
         IsSlamming = true;
     }
     public void ApplySlamImpact()
     {
-        // Give enemy damage
-        Collider[] enemyColliders = EntityInRange(groundCheck.position, detectRadius, enemyLayer);
+        // Check Enemy in Range
+        Collider[] enemyColliders = new Collider[20];
+        int enemyCount = EntityHelper.EntityInRange(groundCheck.position, slamRadius, enemyColliders, enemyLayer);
         
-        if (enemyColliders.Length > 0)
+        // Perform Slam Impact
+        if (enemyCount > 0)
         {
-            foreach (var enemy in enemyColliders)
+            for(int i = 0; i < enemyCount; i++)
             {
-                ApplyDamageToEnemy(enemy ,50, enemyRepelForce);
+                Collider enemy = enemyColliders[i];
+                if (enemy.gameObject == gameObject) continue;
+        
+                ApplyDamageToEnemy(enemy, slamDamage, enemyRepelForce);
                 HitStop();
             }
         }
         
-        // Effects
+        // Update Data
         IsSlamming = false;
+        // Event
         OnSlamImpact?.Invoke();
     }
     
     // Dash
     public void ApplyDashImpulse(Vector3 dir)
     {
-        dashCooldownTimer = dashCooldown;
+        // Perform Dash
         dashVelocity += dir.normalized * dashSpeed;
+        // Update Stamina
         TakeStamina(dashValue);
+        // Update Data
+        dashCooldownTimer = dashCooldown;
         IsDashing = true;
+        // Event
         OnDash?.Invoke();
     }
-
-    public bool DashHit;
 
     public void ApplyDashImpact()
     {
         bool hitSomething = false;
-
-        Collider[] enemyColliders = EntityInRange(dashHitCheck.position, 1, enemyLayer);
-        Collider[] bulletColliders = EntityInRange(dashHitCheck.position, 1, bulletLayer);
         
-        if (enemyColliders.Length > 0)
+        // Check Enemy in Range
+        Collider[] enemyColliders = new Collider[5];
+        int enemyCount = EntityHelper.EntityInRange(dashHitCheck.position, dashRadius, enemyColliders, enemyLayer);
+        // Perform Dash Impact
+        if (enemyCount > 0)
         {
-            foreach (var enemy in enemyColliders)
+            for (int i = 0; i < enemyCount; i++)
             {
+                Collider enemy = enemyColliders[i];
                 if (enemy.gameObject == gameObject) continue;
-                
-                ApplyDamageToEnemy(enemy ,50, enemyRepelForce);
+        
+                ApplyDamageToEnemy(enemy, dashDamage, enemyRepelForce);
                 Vector3 knockbackDir = EntityHelper.GetKnockbackDirection(enemy.transform.position, transform.position, 0.3f);
                 ApplyKnockback(knockbackDir, playerRepelForce);
                 hitSomething = true;
             }
         }
-
-        // Process bullets
-        if (bulletColliders.Length > 0)
+        
+        // Check Bullet in Range
+        Collider[] bulletColliders = new Collider[5];
+        int bulletCount = EntityHelper.EntityInRange(dashHitCheck.position, dashRadius, bulletColliders, bulletLayer);
+        // Perform Dash Impact
+        if (bulletCount > 0)
         {
-            foreach (var bullet in bulletColliders)
+            for (int i = 0; i < bulletCount; i++)
             {
+                GameObject bullet = bulletColliders[i].gameObject;
+                
                 if (bullet) bullet.GetComponent<Bullet>().SetDirection(Cam.transform.forward);
                 hitSomething = true;
             }
         }
         
+        // Perform Common Effects
         if (hitSomething)
-        {
             HitStop();
-            DashHit = true;
-            ResetDash();
-        }
+        // Update Data
+        DashHit = hitSomething;
     }
     
     public void ResetDash()
     {
-        dashVelocity = Vector3.zero; // IMPORTANT RESET
+        dashVelocity = Vector3.zero;
         IsDashing = false;
         DashHit = false;
     }
@@ -402,7 +403,7 @@ public class PlayerController : MonoBehaviour, IMoveable, IKnockback
     
     #endregion
     
-    private static void HitStop() => VFXManager.Instance.TriggerHitStop(0.15f);
+    private void HitStop() => VfxManager.TriggerHitStop(0.1f);
     private void TakeStamina(int amount) => PlayerStamina.TakeStamina(amount);
 
     #region Bools
@@ -436,23 +437,10 @@ public class PlayerController : MonoBehaviour, IMoveable, IKnockback
         jumpBufferTimer = 0f;
         return true;
     }
-    
-    // Enemy
-    // private int EntityInRange(Vector3 pos, float detectRadius, LayerMask layerMask)
-    // {
-    //     int enemyCount = Physics.OverlapSphereNonAlloc(pos, detectRadius, enemyColliders, layerMask);
-    //     return enemyCount;
-    // }
-    
-    private Collider[] EntityInRange(Vector3 pos, float detectRadius, LayerMask layerMask)
-    {
-        Collider[] colliders = Physics.OverlapSphere(pos, detectRadius, layerMask);
-        return colliders;
-    }
 
     // Special
     public bool CanSlam() => !IsGrounded && slamTimer <= 0 && PlayerStamina.CurrentStamina >= slamValue;
-    public bool CanDash() => dashCooldownTimer <= 0 && !(InputManager.MoveInput.y < -0.1f) && PlayerStamina.CurrentStamina >= dashValue;
+    public bool CanDash() => dashCooldownTimer <= 0 && !(moveInput.y < -0.1f) && moveInput != Vector2.zero  && PlayerStamina.CurrentStamina >= dashValue;
 
     #endregion
     
@@ -460,21 +448,20 @@ public class PlayerController : MonoBehaviour, IMoveable, IKnockback
 
     public Vector3 CaptureDirection()
     {
-        Vector2 moveInput = InputManager.MoveInput;
         return moveInput != Vector2.zero ? (Cam.transform.forward * moveInput.y + Cam.transform.right * moveInput.x).normalized : Cam.transform.forward.normalized;
     }
 
     #endregion
     
-    #region 
+    #region Gizmos
     
     private void OnDrawGizmos()
     {
         // Grounded sphere
         Gizmos.DrawSphere(groundCheck.position + (Vector3.down * groundCheckDistance), groundCheckRadius);
         // Enemy detect sphere
-        Gizmos.DrawWireSphere(groundCheck.position, detectRadius);
-        Gizmos.DrawWireSphere(dashHitCheck.position, 1);
+        Gizmos.DrawWireSphere(groundCheck.position, slamRadius);
+        Gizmos.DrawWireSphere(dashHitCheck.position, dashRadius);
     }
     
     #endregion

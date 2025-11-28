@@ -49,17 +49,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 21dab7ca99f13d64b9312885cc7f490a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Data: {fileID: 11400000, guid: fa9b672144e178a499fe2f31727389b8, type: 2}
+  enemyData: {fileID: 11400000, guid: fa9b672144e178a499fe2f31727389b8, type: 2}
   moveSmoothness: 10
   rotationSpeed: 10
-  predictionStrength: 6
+  predictionStrength: 4
   knockbackWeight: 1
   useGravity: 0
   hoverHeight: 5
   heightSmoothTime: 0.5
-  bulletSpeed: 20
-  knockbackForce: 10
-  bulletPrefab: {fileID: 1084249187110805435, guid: d17e283453e50149e92e017a82ffa86a, type: 3}
+  bulletData:
+    damage: 0
+    speed: 90
+    kbForce: 20
+    kbRadius: 2
+    damageRadius: 1
+    material: {fileID: 2100000, guid: 6bc83681f9fdd5bc2817cb80a9707a00, type: 2}
+    hitMask:
+      serializedVersion: 2
+      m_Bits: 73
   muzzle: {fileID: 1988238454298509691}
 --- !u!114 &880819428004800914
 MonoBehaviour:

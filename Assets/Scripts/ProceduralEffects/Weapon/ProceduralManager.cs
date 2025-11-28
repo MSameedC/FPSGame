@@ -36,7 +36,7 @@ public class ProceduralManager : MonoBehaviour
     #region Context
 
     // Required every frame because data changes
-    public ProceduralRuntimeContext BuildRuntimeContext()
+    private ProceduralRuntimeContext BuildRuntimeContext()
     {
         return new ProceduralRuntimeContext
         {
@@ -52,7 +52,7 @@ public class ProceduralManager : MonoBehaviour
     }
 
     // Only required once
-    public ProceduralRuntimeContext BuildBaseContext()
+    private ProceduralRuntimeContext BuildBaseContext()
     {
         return new ProceduralRuntimeContext
         {

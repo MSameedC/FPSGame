@@ -49,7 +49,7 @@ public class EnemyVFX : MonoBehaviour
         enemy.OnPlayerLost += RenderDefaultMaterial;
     }
 
-    private void OnDestroy()
+    private void OnDisable()
     {
         if (!enemy) return;
         enemy.OnSpawned -= PerformSpawnEffect;

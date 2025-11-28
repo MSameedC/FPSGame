@@ -11,8 +11,10 @@ public class PlayerSlamState : PlayerState
     
     public override void Update(float delta)
     {
-        if (!player.IsGrounded) return;
-        player.ApplySlamImpact();          // damage/knockback to enemies
-        player.SetState(new PlayerGroundedState(player));
+        if (player.IsGrounded)
+        {
+            player.ApplySlamImpact();          // damage/knockback to enemies
+            player.SetState(new PlayerGroundedState(player));
+        }
     }
 }

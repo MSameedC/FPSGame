@@ -8,10 +8,6 @@ public class EnemyDeadState : BaseState
     {
         enemy.OnDeathEnter();
         enemy.InvokeDeathEvent();
-    }
-
-    public override void Update(float delta)
-    {
         enemy.StartCoroutine(enemy.ReturnToPoolAfterDeath());
     }
 }

@@ -8,13 +8,13 @@ public abstract class EnemyBase : MonoBehaviour, IMoveable, IDamageable, IKnockb
     public event Action OnPlayerSpotted;
     public event Action OnPlayerLost;
     public event Action OnSpawned;
-    public event Action OnDespawned; 
+    public event Action OnDespawned;
     public event Action OnAttack;
     public event Action OnHurt;
     public event Action OnDeath; 
     
     [Header("Data")]
-    [SerializeField] protected EnemyData Data;
+    [SerializeField] protected EnemyData enemyData;
     [Header("Movement")]
     [SerializeField] protected float moveSmoothness = 10;
     [SerializeField] protected float rotationSpeed = 6;
@@ -22,43 +22,51 @@ public abstract class EnemyBase : MonoBehaviour, IMoveable, IDamageable, IKnockb
     [SerializeField] protected float predictionStrength = 1.2f;
     [Header("State")]
     [Range(0, 1)][SerializeField] protected float knockbackWeight;
+    [Header("Flags")]
     [SerializeField] public bool useGravity = true;
 
     #region Enemy Data Variables
 
-    public float MinAttackRange => Data.attackRange.x;
-    public float MaxAttackRange => Data.attackRange.y;
-    public float DetectRange => Data.detectRange;
-    public float AttackRate => Data.attackRate;
-    public int ScoreValue => Data.scoreValue;
+    public float MinAttackRange => enemyData.attackRange.x;
+    public float MaxAttackRange => enemyData.attackRange.y;
+    public float DetectRange => enemyData.detectRange;
+    public float AttackRate => enemyData.attackRate;
+    public int ScoreValue => enemyData.scoreValue;
 
     #endregion
 
     public float CurrentHealth { get; private set; }
     
-    public Vector3 lastKnownPlayerPosition { get; private set; }
-
-    private Transform player;
-    protected CharacterController CharacterController;
-
+    // Movement
     public float MoveMagnitude { get; private set; }
-    public bool IsGrounded => CharacterController.isGrounded;
-
     protected abstract Vector3 moveVelocity { get; set; }
-
+    
+    // Ground Check
+    public bool IsGrounded => cc.isGrounded;
+    
+    // Timers
     private float attackTimer;
-
     private float bufferTimer;
     private float patrolTimer;
     private float waitTimer;
     private Vector3 randomDir;
-
+    
+    // Velocities
     private float gravityVelocity;
     private Vector3 knockbackVelocity;
     private Vector3 totalVelocity;
-
-    private PlayerRegistry PlayerRegistry;
-    protected EnemyManager enemyManager;
+    
+    // Prediction
+    private Vector2 smoothedInput;
+    private Vector2 inputVelocity;
+    
+    public Vector3 lastKnownPlayerPosition { get; private set; }
+    
+    // Components
+    private Transform player;
+    private PlayerRegistry playerRegistry;
+    protected ProjectileManager projectileManager;
+    protected CharacterController cc;
 
     // State machine
     private BaseState currentState;
@@ -68,33 +76,34 @@ public abstract class EnemyBase : MonoBehaviour, IMoveable, IDamageable, IKnockb
     protected virtual void Start()
     {
         // Get Component
-        PlayerRegistry = PlayerRegistry.Instance;
-        enemyManager = EnemyManager.Instance;
-
-        CharacterController = GetComponent<CharacterController>();
+        playerRegistry = PlayerRegistry.Instance;
+        projectileManager = ProjectileManager.Instance;
+        cc = GetComponent<CharacterController>();
 
         OnSpawn();
         FindPlayer();
     }
 
-    public void OnSpawn()
-    {
-        OnSpawned?.Invoke();
-        // Set Data
-        CurrentHealth = Data.maxHealth;
-        SetState(new EnemyPatrolState(this));
-    }
+    public void OnSpawn() => StartCoroutine(SpawnRoutine());
+    public void OnDespawn() => OnDespawned?.Invoke();
 
-    public void OnDespawn()
+    private IEnumerator SpawnRoutine()
     {
-        OnDespawned?.Invoke();
+        // Wait one frame
+        yield return null;
+        // Set Enemy State
+        SetState(new EnemyChaseState(this));
+        // Update Data
+        CurrentHealth = enemyData.maxHealth;
+        // Event
+        OnSpawned?.Invoke();
     }
 
     protected virtual void Update()
     {
         float delta = Time.deltaTime;
 
-        if (!CharacterController) return;
+        if (!cc) return;
 
         // If out of world, kill itself
         if (transform.position.y < -200) TakeDamage(99999999);
@@ -111,7 +120,7 @@ public abstract class EnemyBase : MonoBehaviour, IMoveable, IDamageable, IKnockb
     {
         float delta = Time.deltaTime;
 
-        if (!CharacterController) return;
+        if (!cc) return;
         
         // Common state machine update
         currentState?.LateUpdate(delta);
@@ -134,7 +143,7 @@ public abstract class EnemyBase : MonoBehaviour, IMoveable, IDamageable, IKnockb
 
         // Velocity
         totalVelocity = moveVelocity + knockbackVelocity + Vector3.up * gravityVelocity;
-        CharacterController.Move(totalVelocity * delta);
+        cc.Move(totalVelocity * delta);
     } 
 
     #endregion
@@ -154,7 +163,7 @@ public abstract class EnemyBase : MonoBehaviour, IMoveable, IDamageable, IKnockb
     {
         if (player != null) return; // If we have player, don't execute
 
-        PlayerData playerData = PlayerRegistry.GetLocalPlayer();
+        PlayerData playerData = playerRegistry.GetLocalPlayer();
         
         if (playerData == null)
         {
@@ -174,7 +183,7 @@ public abstract class EnemyBase : MonoBehaviour, IMoveable, IDamageable, IKnockb
 
     private void ApplyGravity(float delta)
     {
-        if (CharacterController.isGrounded && gravityVelocity < 0)
+        if (cc.isGrounded && gravityVelocity < 0)
         {
             gravityVelocity = GravityData.groundStickForce;
             return;
@@ -193,13 +202,21 @@ public abstract class EnemyBase : MonoBehaviour, IMoveable, IDamageable, IKnockb
     }
     public Vector3 GetPredictedDirectionToPlayer()
     {
-        Vector2 predictInput = InputManager.MoveInput;
+        float distanceToPlayer = Vector3.Distance(transform.position, player.position);
+    
+        // Smooth input
+        float smoothTime = Mathf.Lerp(0.1f, 0.5f, distanceToPlayer / 20f); // Smoother when farther
+        smoothedInput = Vector2.SmoothDamp(smoothedInput, InputManager.MoveInput, ref inputVelocity, smoothTime);
+    
+        // Distance-based prediction strength
+        float predictionMultiplier = Mathf.Clamp(distanceToPlayer / 8f, 0.05f, 1f);
         
-        Vector3 predictOffset = new Vector3(predictInput.x, 0, predictInput.y) * predictionStrength;
+        // Always predict slightly ahead, even when player is standing still
+        Vector3 baseOffset = transform.forward * 0.5f; // Small forward prediction
+        Vector3 predictOffset = new Vector3(smoothedInput.x, 0, smoothedInput.y) * (predictionStrength * predictionMultiplier) + baseOffset;
+    
         Vector3 predictedPlayerPosition = player.position + predictOffset;
-        Vector3 predictionDirection = (predictedPlayerPosition - transform.position).normalized;
-        
-        return predictionDirection;
+        return (predictedPlayerPosition - transform.position).normalized;
     }
 
     private Vector3 GetDirectionToPlayer()
@@ -220,6 +237,22 @@ public abstract class EnemyBase : MonoBehaviour, IMoveable, IDamageable, IKnockb
     public bool PlayerSpotted()
     {
         return GetDistanceToPlayer() <= DetectRange;
+    }
+    
+    public bool HasClearLineOfSight()
+    {
+        if (!player) return false;
+
+        Vector3 directionToPlayer = GetDirectionToPlayer();
+        float distanceToPlayer = GetDistanceToPlayer();
+    
+        // Raycast to check for obstacles (including other enemies)
+        if (Physics.Raycast(transform.position, directionToPlayer, out RaycastHit hit, distanceToPlayer))
+        {
+            // If we hit something that's NOT the player, line of sight is blocked
+            return hit.transform == player;
+        }
+        return true;
     }
     
     public void InvokeOnPlayerSpotted() => OnPlayerSpotted?.Invoke();
@@ -247,7 +280,7 @@ public abstract class EnemyBase : MonoBehaviour, IMoveable, IDamageable, IKnockb
             direction.Normalize();
 
         float rawSpeed = new Vector3(moveVelocity.x, 0, moveVelocity.z).magnitude;
-        MoveMagnitude = Mathf.InverseLerp(0f, Data.moveSpeed, rawSpeed);
+        MoveMagnitude = Mathf.InverseLerp(0f, enemyData.moveSpeed, rawSpeed);
     }
 
     public void LookAt(Vector3 direction, float delta)
@@ -370,7 +403,7 @@ public abstract class EnemyBase : MonoBehaviour, IMoveable, IDamageable, IKnockb
     {
         yield return StartCoroutine(WaitForDeathCompletion());  // Separately defined per enemy
         yield return null;  // Wait one frame after animation death completion
-        enemyManager.UnregisterEnemy(this);
+        EnemyManager.Instance.UnregisterEnemy(this);
     }
 
     #endregion

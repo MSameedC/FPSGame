@@ -7,12 +7,17 @@ public class EnemyChaseState : BaseState
     private EnemyBase enemy => (EnemyBase)entity;
 
     private float lostSightTimer;
+    private float strafeTimer;
+    private float strafeDirection;
     
     // ---
+    
     public override void Enter()
     {
         lostSightTimer = 5;
         enemy.InvokeOnPlayerSpotted();
+        strafeTimer = Random.Range(1f, 3f);
+        strafeDirection = Random.Range(0, 2) * 2 - 1; // -1 or 1
     }
     
     public override void LateUpdate(float delta)
@@ -36,15 +41,41 @@ public class EnemyChaseState : BaseState
         }
         else
         {
-            lostSightTimer = 5;
+            Vector3 toPlayer = enemy.GetPredictedDirectionToPlayer();
             
             if (enemy.IsTooClose())
                 enemy.Retreat(delta);
             else if (enemy.IsTooFar())
-                enemy.Chase(enemy.GetPredictedDirectionToPlayer(), delta);
-        
-            if (enemy.IsInAttackRange() && enemy.CanAttack())
-                enemy.SetState(new EnemyAttackState(enemy));
+                enemy.Chase(toPlayer, delta);
+
+            if (enemy.HasClearLineOfSight())
+            {
+                if (enemy.IsInAttackRange() && enemy.CanAttack() )
+                {
+                    enemy.SetState(new EnemyAttackState(enemy));
+                }
+            }
+            else
+            {
+                strafeTimer = 0;    // Immediate Reset
+                strafeDirection = Random.Range(0, 2) * 2 - 1; // Generate Direction
+            }
+            
+            // Update Strafe Timer
+            strafeTimer -= delta;
+            // Update Strafe Direction
+            if (strafeTimer <= 0)
+            {
+                strafeDirection *= -1; // Switch direction
+                strafeTimer = Random.Range(1f, 3f); // Set Timer to Strafe for
+            }
+            // Perform Strafe
+            Vector3 strafeDir = Vector3.Cross(toPlayer, Vector3.up).normalized * strafeDirection;
+            Vector3 moveDirection = (toPlayer + strafeDir * 0.3f).normalized;
+            enemy.Chase(moveDirection, delta);
+            
+            // Update Data
+            lostSightTimer = 5;
         }
     }
     

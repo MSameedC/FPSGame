@@ -2,60 +2,20 @@ using UnityEngine;
 
 public class WeaponHandler : MonoBehaviour
 {
-    [SerializeField] private PlayerController playerManager;
-
-    private IMoveable player;
-    private WeaponController lastWeapon;
-    public WeaponController CurrentWeapon => lastWeapon;
+    [SerializeField] private GameObject player;
+    public WeaponBase CurrentWeapon { get; private set; }
+    
+    // ---
 
     private void Start()
     {
-        player = playerManager;
-
-        // Bind initial weapon if present
-        var initialWeapon = GetComponentInChildren<WeaponController>();
-        if (initialWeapon != null)
-            EquipWeapon(initialWeapon);
+        CurrentWeapon = transform.GetChild(0).gameObject.GetComponent<WeaponBase>();
+        CurrentWeapon.GetComponent<ProceduralManager>().SetPlayer(player.GetComponent<IMoveable>());
     }
 
-    public void EquipWeapon(WeaponController newWeapon)
+    private void OnEnable()
     {
-        if (newWeapon == lastWeapon) return;
-
-        if (lastWeapon != null)
-            UnbindFrom(lastWeapon);
-
-        if (newWeapon != null)
-            BindTo(newWeapon);
-
-        lastWeapon = newWeapon;
-    }
-
-    private void BindTo(WeaponController weapon)
-    {
-        if (weapon == null) return;
-
-        ProceduralManager proceduralManager = weapon.GetComponent<ProceduralManager>();
-        proceduralManager.SetPlayer(player);
-    }
-
-    private void UnbindFrom(WeaponController weapon)
-    {
-        if (weapon == null) return;
-
-        ProceduralManager proceduralManager = weapon.GetComponent<ProceduralManager>();
-        proceduralManager.SetPlayer(null);
-    }
-
-    private void OnDisable()
-    {
-        if (lastWeapon != null)
-            UnbindFrom(lastWeapon);
-    }
-
-    private void OnDestroy()
-    {
-        if (lastWeapon != null)
-            UnbindFrom(lastWeapon);
+        CurrentWeapon = transform.GetChild(0).gameObject.GetComponent<WeaponBase>();
+        CurrentWeapon.GetComponent<ProceduralManager>().SetPlayer(player.GetComponent<IMoveable>());
     }
 }

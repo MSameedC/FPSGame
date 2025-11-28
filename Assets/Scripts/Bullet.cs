@@ -1,22 +1,43 @@
+using System.Collections;
 using UnityEngine;
 
 public class Bullet : MonoBehaviour, IPoolable
 {
     [SerializeField] private float lifetime = 10f;
-
-    private float knockbackForce;
-    private float speed;
+    [SerializeField] private MeshRenderer meshRenderer;
+    [SerializeField] private TrailRenderer trailRenderer;
+    
     private int damage;
+    private float speed;
+    private float kbForce;
+    private float kbRadius;
+    private float damageRadius;
     private Vector3 direction;
+    private LayerMask detectLayerMask;
+    
+    private readonly Collider[] kbCollider = new Collider[10];
+    private readonly Collider[] damageCollider = new Collider[10];
 
     private float timer;
+    
+    private Rigidbody rb;
 
-    public void Initialize(int bulletDamage, float bulletSpeed, float bulletKnockback, Vector3 moveDirection)
+    private void Awake()
     {
-        damage = bulletDamage;
-        speed = bulletSpeed;
-        knockbackForce = bulletKnockback;
+        rb =  GetComponent<Rigidbody>();
+    }
+
+    public void Initialize(BulletData bulletData, Vector3 moveDirection)
+    {
+        speed = bulletData.speed;
         direction = moveDirection;
+        damage = bulletData.damage;
+        kbForce = bulletData.kbForce;
+        kbRadius = bulletData.kbRadius;
+        damageRadius = bulletData.damageRadius;
+        detectLayerMask = bulletData.hitMask;
+        meshRenderer.material = bulletData.material;
+        trailRenderer.material = bulletData.material;
         timer = lifetime;
     }
 
@@ -25,7 +46,14 @@ public class Bullet : MonoBehaviour, IPoolable
         float delta = Time.deltaTime;
         if (!gameObject.activeSelf) return;
 
-        transform.position += direction * (speed * delta);
+        if (rb)
+        {
+            rb.MovePosition(transform.position + direction * (speed * delta));
+        }
+        else
+        {
+            transform.position += direction * (speed * delta);
+        }
 
         timer -= delta;
         if (timer <= 0)
@@ -34,15 +62,39 @@ public class Bullet : MonoBehaviour, IPoolable
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject.layer == LayerMask.GetMask("Enemy")) return;
+        if (other == null) return;
+        
+        bool hitSomething = false;
+        
+        int kbEntities = EntityHelper.EntityInRange(transform.position, kbRadius, kbCollider, detectLayerMask);
+        if (kbEntities > 0)
+        {
+            for (int i = 0; i < kbEntities; i++)
+            {
+                Collider entity = kbCollider[i];
+                
+                Vector3 kbDirection = EntityHelper.GetKnockbackDirection(transform.position, entity.transform.position, 0.05f);
+                entity.GetComponent<IKnockback>()?.ApplyKnockback(kbDirection, kbForce);
+                
+                hitSomething = true;
+            }
+        }
+        
+        int damageableEntities = EntityHelper.EntityInRange(transform.position, damageRadius, damageCollider, detectLayerMask);
+        if (damageableEntities > 0)
+        {
+            for (int i = 0; i < damageableEntities; i++)
+            {
+                Collider entity = damageCollider[i];
+                entity.GetComponent<IDamageable>()?.TakeDamage(damage);
+                hitSomething = true;
+            }
+        }
 
-        var damageable = other.transform.GetComponent<IDamageable>();
-        var knockbackable = other.transform.GetComponent<IKnockback>();
-
-        damageable?.TakeDamage(damage);
-
-        var kbDirection = EntityHelper.GetKnockbackDirection(transform.position, other.transform.position, 0);
-        knockbackable?.ApplyKnockback(kbDirection, knockbackForce);
+        if (hitSomething)
+        {
+            AudioManager.Instance.PlaySFX(AudioManager.Instance.Library.explosionSound, transform.position, Quaternion.identity);
+        }
 
         ReturnToPool();
     }

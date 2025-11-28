@@ -614,7 +614,7 @@ Transform:
   m_GameObject: {fileID: 6370030090896497709}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: -0.38268343, z: 0, w: 0.92387956}
-  m_LocalPosition: {x: -0.3, y: -0.18, z: 0.55}
+  m_LocalPosition: {x: -0.3, y: -0.17, z: 0.55}
   m_LocalScale: {x: 0.07, y: 0.07, z: 0.07}
   m_ConstrainProportionsScale: 1
   m_Children: []
@@ -638,8 +638,8 @@ MonoBehaviour:
   m_SortingOrder: 0
   m_Position: 0
   m_WorldSpaceSizeMode: 1
-  m_WorldSpaceWidth: 400
-  m_WorldSpaceHeight: 125
+  m_WorldSpaceWidth: 350
+  m_WorldSpaceHeight: 120
   m_PivotReferenceSize: 1
   m_Pivot: 0
   m_WorldSpaceCollider: {fileID: 0}
@@ -839,7 +839,19 @@ MonoBehaviour:
     m_ActionId: 2776c80d-3c14-4091-8c56-d04ced07a2b0
     m_ActionName: 'Player/Previous[/Keyboard/1]'
   - m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 3236350477599691739}
+        m_TargetAssemblyTypeName: InputHandler, Assembly-CSharp
+        m_MethodName: SwitchBullet
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
     m_ActionId: b7230bb6-fc9b-4f52-8b25-f5e19cb2c2ba
     m_ActionName: 'Player/Next[/Keyboard/2]'
   - m_PersistentCalls:
@@ -953,36 +965,45 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerManager
   walkSpeed: 15
-  groundAcc: 60
-  airAcc: 45
+  groundAcc: 80
+  airAcc: 60
   dashSpeed: 80
   dashDuration: 0.2
-  dashCooldown: 2
-  dashValue: 30
+  dashCooldown: 1
+  dashValue: 40
   slamForce: 100
   slamCooldown: 0.2
-  slamValue: 50
+  slamValue: 60
   jumpHeight: 8
   jumpBufferTime: 0.15
   coyoteTime: 0.15
   jumpCooldown: 0.3
   wallJumpHorizontalForce: 40
-  wallJumpVerticalForce: 3
+  wallJumpVerticalForce: 4
   wallCheckDistance: 0.2
-  wallJumpDecay: 2
+  wallJumpDecay: 3
   wallMask:
     serializedVersion: 2
-    m_Bits: 64
-  groundCheck: {fileID: 3889740076992910510}
+    m_Bits: 8
   groundCheckRadius: 0.2
   groundCheckDistance: 0.2
   groundMask:
     serializedVersion: 2
-    m_Bits: 64
-  detectRadius: 6
+    m_Bits: 8
+  groundCheck: {fileID: 3889740076992910510}
+  dashRadius: 1
+  slamRadius: 5
   enemyLayer:
     serializedVersion: 2
-    m_Bits: 8
+    m_Bits: 64
+  bulletLayer:
+    serializedVersion: 2
+    m_Bits: 128
+  dashHitCheck: {fileID: 3845127321869036120}
+  slamDamage: 50
+  dashDamage: 30
+  playerRepelForce: 50
+  enemyRepelForce: 80
 --- !u!114 &3165556812085804939
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1183,7 +1204,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d428c6f9228db4848853bdac605109d7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::WeaponParent
-  playerManager: {fileID: 6638784322070974118}
+  player: {fileID: 8233145124240534301}
 --- !u!1001 &3119228735799594525
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1236,17 +1257,13 @@ PrefabInstance:
       propertyPath: m_Name
       value: Weapon
       objectReference: {fileID: 0}
-    - target: {fileID: 7649538029574835614, guid: 856b799ab2a3ab740b81ed05405b8a89, type: 3}
-      propertyPath: animator
-      value: 
-      objectReference: {fileID: 7997430630219976104}
-    - target: {fileID: 7649538029574835614, guid: 856b799ab2a3ab740b81ed05405b8a89, type: 3}
-      propertyPath: lineRenderer
-      value: 
-      objectReference: {fileID: 6813579498928756430}
-    - target: {fileID: 7649538029574835614, guid: 856b799ab2a3ab740b81ed05405b8a89, type: 3}
-      propertyPath: currentFireMode
-      value: 0
+    - target: {fileID: 7523479496907973984, guid: 856b799ab2a3ab740b81ed05405b8a89, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -0.2
+      objectReference: {fileID: 0}
+    - target: {fileID: 7523479496907973984, guid: 856b799ab2a3ab740b81ed05405b8a89, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.11
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -1256,15 +1273,5 @@ PrefabInstance:
 --- !u!4 &392174046750292202 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 3330678238051251959, guid: 856b799ab2a3ab740b81ed05405b8a89, type: 3}
-  m_PrefabInstance: {fileID: 3119228735799594525}
-  m_PrefabAsset: {fileID: 0}
---- !u!120 &6813579498928756430 stripped
-LineRenderer:
-  m_CorrespondingSourceObject: {fileID: 8486761325971560659, guid: 856b799ab2a3ab740b81ed05405b8a89, type: 3}
-  m_PrefabInstance: {fileID: 3119228735799594525}
-  m_PrefabAsset: {fileID: 0}
---- !u!95 &7997430630219976104 stripped
-Animator:
-  m_CorrespondingSourceObject: {fileID: 5022972410770588597, guid: 856b799ab2a3ab740b81ed05405b8a89, type: 3}
   m_PrefabInstance: {fileID: 3119228735799594525}
   m_PrefabAsset: {fileID: 0}

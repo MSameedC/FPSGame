@@ -51,7 +51,7 @@ public class Enemy : EnemyBase
         base.MoveTo(direction, delta);
 
         // Handle horizontal movement with smoothing
-        Vector3 targetHorizontalVelocity = direction * Data.moveSpeed;
+        Vector3 targetHorizontalVelocity = direction * enemyData.moveSpeed;
         horizontalVelocity = Vector3.Lerp(horizontalVelocity, targetHorizontalVelocity, delta * moveSmoothness);
 
         // Combine horizontal and vertical movement

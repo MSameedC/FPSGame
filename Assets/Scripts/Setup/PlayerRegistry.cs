@@ -1,9 +1,13 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class PlayerRegistry : MonoBehaviour
 {
     public static PlayerRegistry Instance { get; private set; }
+    
+    public event Action<PlayerData> OnPlayerRegistered;
+    public event Action<PlayerData> OnPlayerUnregistered;
 
     private readonly Dictionary<int, PlayerData> players = new();
     private int nextPlayerId = 1; // Start from 1, 0 can be "invalid"
@@ -23,6 +27,8 @@ public class PlayerRegistry : MonoBehaviour
         
         players.Add(newId, data);
         
+        OnPlayerRegistered?.Invoke(data);
+        
         Debug.Log($"Player registered with ID: {newId}");
     }
     
@@ -31,6 +37,7 @@ public class PlayerRegistry : MonoBehaviour
     {
         if (players.Remove(data.PlayerId))
         {
+            OnPlayerUnregistered?.Invoke(data);
             Debug.Log($"Player {data.PlayerId} unregistered");
         }
     }

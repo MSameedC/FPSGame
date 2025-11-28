@@ -7,20 +7,10 @@ public class Turret : EnemyBase
     private Vector3 randomDir;
     
     private Vector3 horizontalVelocity;
-    private CharacterController cc;
 
     protected override Vector3 moveVelocity { get; set; }
 
     // ---
-
-    #region Unity
-
-    private void Awake()
-    {
-        cc = GetComponent<CharacterController>();
-    }
-
-    #endregion
 
     #region Behaviours
     
@@ -42,7 +32,7 @@ public class Turret : EnemyBase
         if (!cc) return;
 
         // Handle horizontal movement with smoothing
-        Vector3 targetHorizontalVelocity = direction * Data.moveSpeed;
+        Vector3 targetHorizontalVelocity = direction * enemyData.moveSpeed;
         horizontalVelocity = Vector3.Lerp(horizontalVelocity, targetHorizontalVelocity, delta * moveSmoothness);
 
         // Combine horizontal and vertical movement

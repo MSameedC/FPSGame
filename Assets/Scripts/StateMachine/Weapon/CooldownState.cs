@@ -1,9 +1,8 @@
 public class CooldownState : WeaponState
 {
-    public CooldownState(WeaponController weapon) : base(weapon) { }
+    public CooldownState(WeaponBase weapon) : base(weapon) { }
 
     private WeaponData data => weapon.GetWeaponData();
-    private UpgradeableWeaponData upgradedData => weapon.GetUpgradedData();
 
     private float cooldownDelay;
 
@@ -24,7 +23,7 @@ public class CooldownState : WeaponState
         weapon.OnCoolDownExit();
 
         // Only transition when cooled down sufficiently
-        if (weapon.CurrentHeat <= upgradedData.MaxHeat * 0.3f) // 30% threshold
+        if (weapon.CurrentHeat <= data.maxHeat * 0.3f) // 30% threshold
         {
             weapon.SetState(new IdleState(weapon));
         }
