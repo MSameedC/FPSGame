@@ -3,6 +3,7 @@ using UnityEngine;
 [System.Serializable]
 public struct BulletData
 {
+    public EnumManager.BulletType bulletType;
     [HideInInspector] public int damage;
     public float speed;
     public float kbForce;

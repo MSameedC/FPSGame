@@ -16,12 +16,17 @@ public class Pistol : WeaponBase
             IDamageable damageable = hit.collider.GetComponent<IDamageable>();
             damageable?.TakeDamage(weaponData.damage);
 
-            if (damageable == null)
+            if (damageable != null)
             {
-                audioManager.PlaySFX(audioManager.GetRandomClip(audioManager.Library.wallHitSound), hitPoint, Quaternion.identity, 1, 1, 1.2f);
+                VFXManager.PlayEntityHit(hitPoint);
+            }
+            else
+            {
+                AudioManager.PlaySFX(AudioManager.GetRandomClip(AudioManager.Library.wallHitSound), hitPoint, Quaternion.identity, 1, 1, 1.2f);
+                VFXManager.PLayLightWallHit(hitPoint, Quaternion.LookRotation(hit.normal));
             }
         }
         
-        vfxManager.ShowTrail(muzzlePoint.position, hitPoint);
+        VFXManager.ShowTrail(muzzlePoint.position, hitPoint);
     }
 }

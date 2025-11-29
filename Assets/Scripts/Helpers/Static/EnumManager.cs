@@ -6,4 +6,10 @@ public static class EnumManager
         Burst,
         Auto
     }
+
+    public enum BulletType
+    {
+        Normal,
+        Explosive
+    }
 }

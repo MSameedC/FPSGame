@@ -5,11 +5,10 @@ using UnityEngine.VFX;
 public class VFXManager : MonoBehaviour
 {
     public static VFXManager Instance;
-    
+
+    [SerializeField] private VfxLibrary library;
     [SerializeField] private LineRenderer bulletTrail;
-    [SerializeField] private GameObject vfxObject;
     
-    private readonly string VfxPoolId = PoolName.VfxPool;
     private readonly string trailPoolId = PoolName.BulletTrailPool;
     
     // ---
@@ -22,10 +21,6 @@ public class VFXManager : MonoBehaviour
 
     private void Start()
     {
-        vfxObject.SetActive(false);
-        bulletTrail.gameObject.SetActive(false);
-        
-        PoolSystem.CreatePool(VfxPoolId, vfxObject, 10);
         PoolSystem.CreatePool(trailPoolId, bulletTrail.gameObject, 10);
     }
 
@@ -41,23 +36,48 @@ public class VFXManager : MonoBehaviour
         Time.timeScale = 1;
     }
 
-    public void PlayVFX(VisualEffectAsset effect, Vector3 position, Quaternion rotation, float duration = 10)
+    public void PlayVFX(VisualEffect effect, Vector3 position, Quaternion rotation, float duration = 10)
     {
-        if (!PoolSystem.HasAvailable(VfxPoolId))
-        {
-            PoolSystem.Add(VfxPoolId, vfxObject, 5);
-            return;
-        }
-        
-        GameObject vfxObj = PoolSystem.Get(VfxPoolId, position, rotation);
-        VisualEffect visualEffect = vfxObj.GetComponent<VisualEffect>();
-        visualEffect.visualEffectAsset = effect;
+        VisualEffect visualEffect = Instantiate(effect, position, rotation);
         visualEffect.Play();
         
         // The PooledVFX component will handle auto-return
-        PooledVFX pooledVFX = vfxObj.GetComponent<PooledVFX>();
-        pooledVFX.StartLifeTimer(duration);
+        StartCoroutine(ReturnVFXAfterDelay(visualEffect.gameObject, duration));
     }
+    
+    private IEnumerator ReturnVFXAfterDelay(GameObject vfxObj, float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        Destroy(vfxObj);
+    }
+
+    public void PlaySpawnEffect(Vector3 position, Quaternion rotation)
+    {
+        PlayVFX(library.spawn, position, rotation);
+    }
+    
+    public void PlayEntityHit(Vector3 position)
+    {
+        PlayVFX(library.entityHit, position, Quaternion.identity, 5);
+    }
+    
+    public void PLayLightWallHit(Vector3 position, Quaternion rotation)
+    {
+        PlayVFX(library.wallHitLight, position, rotation, 5);
+    }
+    
+    public void PLayHeavyWallHit(Vector3 position, Quaternion rotation)
+    {
+        PlayVFX(library.wallHitLight, position, rotation, 5);
+    }
+    
+    public void PLayExplosionEffect(Vector3 position)
+    {
+        PlayVFX(library.explosion, position, Quaternion.identity, 5);
+    }
+    
+    public void PlayMuzzleFlash(Vector3 position, Quaternion rotation) => PlayVFX(library.muzzleFlash, position, rotation, 5);
+    
     
     public void ShowTrail(Vector3 start, Vector3 end)
     {

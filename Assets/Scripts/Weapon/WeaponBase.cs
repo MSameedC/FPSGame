@@ -28,8 +28,8 @@ public abstract class WeaponBase : MonoBehaviour
     // Components
     private ProceduralManager proceduralManager;
     private WeaponState currentState;
-    protected VFXManager vfxManager;
-    protected AudioManager audioManager;
+    protected VFXManager VFXManager;
+    protected AudioManager AudioManager;
 
     // Camera
     protected Transform CamTransform;
@@ -45,8 +45,8 @@ public abstract class WeaponBase : MonoBehaviour
     
     protected virtual void Start()
     {
-        vfxManager = VFXManager.Instance;
-        audioManager = AudioManager.Instance;
+        VFXManager = VFXManager.Instance;
+        AudioManager = AudioManager.Instance;
         
         SetState(new IdleState(this));
         canCooldown = true;

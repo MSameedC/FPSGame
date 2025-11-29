@@ -14,6 +14,7 @@ public class Bullet : MonoBehaviour, IPoolable
     private float damageRadius;
     private Vector3 direction;
     private LayerMask detectLayerMask;
+    private EnumManager.BulletType bulletType;
     
     private readonly Collider[] kbCollider = new Collider[10];
     private readonly Collider[] damageCollider = new Collider[10];
@@ -21,14 +22,23 @@ public class Bullet : MonoBehaviour, IPoolable
     private float timer;
     
     private Rigidbody rb;
+    private VFXManager VFXManager;
+    private AudioManager AudioManager;
 
     private void Awake()
     {
         rb =  GetComponent<Rigidbody>();
     }
 
+    private void Start()
+    {
+        VFXManager = VFXManager.Instance;
+        AudioManager =  AudioManager.Instance;
+    }
+
     public void Initialize(BulletData bulletData, Vector3 moveDirection)
     {
+        bulletType =  bulletData.bulletType;
         speed = bulletData.speed;
         direction = moveDirection;
         damage = bulletData.damage;
@@ -39,6 +49,34 @@ public class Bullet : MonoBehaviour, IPoolable
         meshRenderer.material = bulletData.material;
         trailRenderer.material = bulletData.material;
         timer = lifetime;
+    }
+
+    private void PlayEffects(bool hitEntity)
+    {
+        if (hitEntity)
+        {
+            if (bulletType == EnumManager.BulletType.Explosive)
+            {
+                AudioManager.PlayExplosionSound(transform.position);
+                VFXManager.PLayExplosionEffect(transform.position);
+            }
+            
+            VFXManager.PlayEntityHit(transform.position);
+        }
+        else
+        {
+            if (bulletType == EnumManager.BulletType.Explosive)
+            {
+                VFXManager.PLayHeavyWallHit(transform.position, Quaternion.identity);
+                VFXManager.PLayExplosionEffect(transform.position);
+                AudioManager.PlayExplosionSound(transform.position);
+            }
+            else
+            {
+                VFXManager.PLayLightWallHit(transform.position, Quaternion.identity);
+            }
+        }
+        
     }
 
     private void Update()
@@ -64,7 +102,7 @@ public class Bullet : MonoBehaviour, IPoolable
     {
         if (other == null) return;
         
-        bool hitSomething = false;
+        bool hitEntity = false;
         
         int kbEntities = EntityHelper.EntityInRange(transform.position, kbRadius, kbCollider, detectLayerMask);
         if (kbEntities > 0)
@@ -76,7 +114,7 @@ public class Bullet : MonoBehaviour, IPoolable
                 Vector3 kbDirection = EntityHelper.GetKnockbackDirection(transform.position, entity.transform.position, 0.05f);
                 entity.GetComponent<IKnockback>()?.ApplyKnockback(kbDirection, kbForce);
                 
-                hitSomething = true;
+                hitEntity = true;
             }
         }
         
@@ -87,15 +125,11 @@ public class Bullet : MonoBehaviour, IPoolable
             {
                 Collider entity = damageCollider[i];
                 entity.GetComponent<IDamageable>()?.TakeDamage(damage);
-                hitSomething = true;
+                hitEntity = true;
             }
         }
 
-        if (hitSomething)
-        {
-            AudioManager.Instance.PlaySFX(AudioManager.Instance.Library.explosionSound, transform.position, Quaternion.identity);
-        }
-
+        PlayEffects(hitEntity);
         ReturnToPool();
     }
 

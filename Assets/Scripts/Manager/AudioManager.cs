@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -53,9 +54,20 @@ public class AudioManager : MonoBehaviour
         AudioSource audioSource = audioObject.GetComponent<AudioSource>();
         audioSource.pitch = Random.Range(pitchMin, pitchMax);
         audioSource.PlayOneShot(clip, volume);
+        StartCoroutine(ReturnVFXAfterDelay(audioObject, 5));
+    }
+    
+    private IEnumerator ReturnVFXAfterDelay(GameObject obj, float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        PoolSystem.Return(PoolName.AudioPool, obj);
     }
     
     public AudioClip GetRandomClip(AudioClip[] clips) => clips.Length > 0 ? clips[Random.Range(0, clips.Length)] : null;
+    
+    public void PlayExplosionSound(Vector3 pos) => PlaySFX(library.explosionSound, pos, Quaternion.identity);
+    public void PlayBulletFire(Vector3 pos) => PlaySFX(library.explosionSound, pos, Quaternion.identity);
+    
     
     // Music management
     public void PlayBackgroundMusic() => PlayMusic(library.backgroundMusic);

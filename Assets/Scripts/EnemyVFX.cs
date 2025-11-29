@@ -5,7 +5,6 @@ public class EnemyVFX : MonoBehaviour
 {
     private static readonly int EmissionColor = Shader.PropertyToID("_EmissionColor");
     
-    [SerializeField] private VfxData vfxData;
     [Header("Hurt Material")]
     [SerializeField] private Material hurtMaterial;
     [Space]
@@ -73,11 +72,10 @@ public class EnemyVFX : MonoBehaviour
     private void PerformHurtEffect()
     {
         StartCoroutine(HurtCoroutine());
-        VFXManager?.PlayVFX(vfxData.hurt, transform.position, Quaternion.identity);
     }
     private void PerformSpawnEffect()
     {
-        VFXManager?.PlayVFX(vfxData.spawn, transform.position, Quaternion.identity);
+        VFXManager?.PlaySpawnEffect(transform.position, Quaternion.identity);
     }
 
     private void RenderHuntMaterial() => isSpotted = true;

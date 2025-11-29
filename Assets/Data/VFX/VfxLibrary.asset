@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b199e30f9db5ad17e9d3fe6c04302993, type: 3}
+  m_Name: VfxLibrary
+  m_EditorClassIdentifier: Assembly-CSharp::VfxData
+  spawn: {fileID: 106529243792298975, guid: b0274e031466a9897907f3e86e8c9bf6, type: 3}
+  entityHit: {fileID: 6907761926745748809, guid: 6ae91a57fad2f692d9c93d9d67cfc9ba, type: 3}
+  wallHitLight: {fileID: 6907761926745748809, guid: 68d00b126b0d1ea93af77d27a95435bb, type: 3}
+  wallHitHeavy: {fileID: 6907761926745748809, guid: c3a8b65d0b67665aaa7ae33c3fbc58d3, type: 3}
+  explosion: {fileID: 681909317827947280, guid: 30f883db397af6a308645d2425f27f9e, type: 3}
+  death: {fileID: 0}
+  muzzleFlash: {fileID: 6907761926745748809, guid: f2c3e366d3b166c148e89bcae68b1aa2, type: 3}

@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public class WeaponAnimationHandler : MonoBehaviour
@@ -7,6 +8,17 @@ public class WeaponAnimationHandler : MonoBehaviour
 
     private void Start()
     {
-        weapon.OnWeaponShoot += () => animator.SetTrigger("Shoot");
+        weapon.OnWeaponShoot += PlayShootAnimation;
+    }
+
+    private void OnDisable()
+    {
+        weapon.OnWeaponShoot -= PlayShootAnimation;
+    }
+
+    private void PlayShootAnimation()
+    {
+        if (InputManager.IsAiming) return;
+        animator.SetTrigger("Shoot");
     }
 }
