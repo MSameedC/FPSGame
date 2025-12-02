@@ -9,6 +9,7 @@ public class PlayerAudio : MonoBehaviour
     [SerializeField] private AudioClip footstepSound;
     [SerializeField] private AudioClip dashSound;
     [SerializeField] private AudioClip slamSound;
+    [SerializeField] private AudioClip jumpSound;
     [SerializeField] private AudioClip landSound;
     
     private float stepTimer;
@@ -26,6 +27,7 @@ public class PlayerAudio : MonoBehaviour
     {
         AudioManager = AudioManager.Instance;
         player.OnSlamImpact += () => PlayOneShot(slamSound);
+        player.OnJumped += () => PlayOneShot(jumpSound, 1, 1, 1.1f);
         player.OnLanded += () => PlayOneShot(landSound);
         player.OnDash += () => PlayOneShot(dashSound);
     }

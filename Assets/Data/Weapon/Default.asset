@@ -21,24 +21,15 @@ MonoBehaviour:
   heatDecayRate: 1
   postOverheatDelay: 2
   recoil:
-    recoilX: 2
-    recoilY: 0.4
-    recoilZ: 0.1
-    kick: 1
+    recoilX: -40
+    recoilY: 0.6
+    recoilZ: 0.2
   aim:
-    aimSens: 0.125
-    aimSway: 0.3
-    aimSpread: 0.1
+    aimSway: 0.2
     aimRecoil: 0.2
     aimReturnSpeed: 25
-    aimRate: 0.1
-  sound:
-    fire: {fileID: 8300000, guid: e87065b8e0f223141a8f9b710d1e945c, type: 3}
-    overheat: {fileID: 8300000, guid: be7ce9bf47206ed44b5df55fc10216a7, type: 3}
   weapon:
-    recoilReturnSpeed: 15
-    recoilSnappiness: 20
-    aimSwitchPosSpeed: 20
-    aimSwitchRotSpeed: 20
+    recoilReturnSpeed: 20
+    recoilSnappiness: 30
     swaySpringStrength: 100
     swayDamping: 10

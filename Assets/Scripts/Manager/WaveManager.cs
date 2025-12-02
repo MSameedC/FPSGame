@@ -77,10 +77,9 @@ public class WaveManager : MonoBehaviour
     {
         // Show end wave score and kills
         // yield return new WaveEndSequence() { }
-
-        // Once that sequence is completed then show upgrade menu
-        float upgradeDelay = 3.75f;
-        yield return new WaitForSeconds(upgradeDelay);
+        PlayerRegistry.GetLocalPlayer().GetHealth().Heal(50);
+        
+        yield return new WaitForSeconds(3.75f);
 
         // Trigger upgrade screen, etc.
         OnWaveCompleted?.Invoke();

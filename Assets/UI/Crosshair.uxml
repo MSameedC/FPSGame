@@ -1,0 +1,6 @@
+<ui:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" noNamespaceSchemaLocation="../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <Style src="project://database/Assets/UI/Style/MainStyle.uss?fileID=7433441132597879392&amp;guid=979ce301da5858340bceca1384c5bdb2&amp;type=3#MainStyle" />
+    <ui:VisualElement name="root" class="background" style="flex-grow: 1; justify-content: center; align-self: center; align-content: center; align-items: center;">
+        <ui:VisualElement name="Crosshair" style="flex-grow: 0; position: absolute; top: auto; left: auto; right: auto; bottom: auto; background-color: rgb(255, 255, 255); width: 2px; height: 2px; justify-content: center; align-self: center; align-content: center; align-items: center;" />
+    </ui:VisualElement>
+</ui:UXML>

@@ -3046,7 +3046,7 @@ MonoBehaviour:
       m_Type:
         m_SerializableType: UnityEngine.Texture2D, UnityEngine.CoreModule, Version=0.0.0.0,
           Culture=neutral, PublicKeyToken=null
-      m_SerializableObject: '{"obj":{"fileID":2800000,"guid":"6c69572945a4fcb4692a0a126f26638f","type":3}}'
+      m_SerializableObject: '{"obj":{"fileID":2800000,"guid":"48e93eef0688c4a259cb0eddcd8661f7","type":3}}'
     m_Space: -1
   m_Property:
     name: baseColorMap

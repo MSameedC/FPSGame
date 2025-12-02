@@ -90,7 +90,7 @@ public class PlayerController : MonoBehaviour, IMoveable, IKnockback
     
     private VFXManager VfxManager;
     private PlayerState currentState;
-    private CharacterController CC;
+    private CharacterController cc;
     private Transform Player;
     private Camera Cam;
 
@@ -106,7 +106,7 @@ public class PlayerController : MonoBehaviour, IMoveable, IKnockback
 
     private void Awake()
     {
-        CC = GetComponent<CharacterController>();
+        cc = GetComponent<CharacterController>();
         PlayerStamina = GetComponent<PlayerStamina>();
     }
 
@@ -135,12 +135,12 @@ public class PlayerController : MonoBehaviour, IMoveable, IKnockback
     private void Update()
     {
         float delta = Time.deltaTime;
-        UpdateGrounded();
-
+        if (!cc) return;
+        
         // TIMERS COME FIRST!
-        #region Timers
-
         // Update timer regardless of grounded state
+        #region Timers
+        
         if (jumpTimer > 0f) jumpTimer -= delta;
         if (dashCooldownTimer > 0f) dashCooldownTimer -= delta;
         if (slamTimer > 0f) slamTimer -= delta;
@@ -148,10 +148,9 @@ public class PlayerController : MonoBehaviour, IMoveable, IKnockback
         if (coyoteTimer > 0f) coyoteTimer -= delta;
 
         #endregion
-
         // State update
         currentState?.Update(delta);
-        // Update gravity
+        UpdateGrounded();
         ApplyGravity(delta);
         // Set timer
         if (IsGrounded)
@@ -159,12 +158,13 @@ public class PlayerController : MonoBehaviour, IMoveable, IKnockback
             wallJumpVelocity = Vector3.zero;
             coyoteTimer = coyoteTime;
         }
+        moveInput = InputManager.MoveInput;
     }
 
     private void LateUpdate()
     {
         float delta = Time.deltaTime;
-        moveInput = InputManager.MoveInput;
+        
         currentState?.LateUpdate(delta);
         MoveTo(moveInput, delta);
     }
@@ -209,7 +209,7 @@ public class PlayerController : MonoBehaviour, IMoveable, IKnockback
         if (IsDashing || IsSlamming)
         {
             Vector3 finalMove = dashVelocity + Vector3.up * gravityVelocity;
-            CC.Move(finalMove * delta);
+            cc.Move(finalMove * delta);
             return;
         }
 
@@ -254,7 +254,7 @@ public class PlayerController : MonoBehaviour, IMoveable, IKnockback
         finalVelocity = inputVelocity + knockbackVelocity + wallJumpVelocity + Vector3.up * gravityVelocity;
         
         // 5. Perform Movement
-        CC.Move(finalVelocity * delta);
+        cc.Move(finalVelocity * delta);
     }
     
     // Jump
@@ -413,7 +413,7 @@ public class PlayerController : MonoBehaviour, IMoveable, IKnockback
     {
         Vector3 origin = transform.position + Vector3.up * 1f;
 
-        if (Physics.SphereCast(origin, CC.radius * 0.9f, Player.forward, out RaycastHit hit, wallCheckDistance, wallMask))
+        if (Physics.SphereCast(origin, cc.radius * 0.9f, Player.forward, out RaycastHit hit, wallCheckDistance, wallMask))
         {
             wallNormal = hit.normal;
             return true;

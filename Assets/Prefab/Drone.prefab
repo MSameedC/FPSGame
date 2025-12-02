@@ -55,6 +55,9 @@ MonoBehaviour:
   predictionStrength: 2
   knockbackWeight: 1
   useGravity: 0
+  losMask:
+    serializedVersion: 2
+    m_Bits: 256
   hoverHeight: 5
   heightSmoothTime: 0.5
   bulletData:

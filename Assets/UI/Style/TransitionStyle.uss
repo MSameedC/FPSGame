@@ -1,0 +1,11 @@
+:root {
+}
+
+.transitionUp {
+    translate: 0 -100%;
+    transition-duration: 1s;
+}
+
+.transitionDefault {
+    transition-duration: 0.1s;
+}

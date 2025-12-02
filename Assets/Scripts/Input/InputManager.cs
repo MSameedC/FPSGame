@@ -11,7 +11,6 @@ public static class InputManager
     public static event Action OnSlamPressed;
     public static event Action OnAimPressed;
     public static event Action OnAimReleased;
-    public static event Action OnBulletSwitch;
     
     // Public invoke methods
     public static void InvokeDashPressed() => OnDashPressed?.Invoke();
@@ -21,7 +20,6 @@ public static class InputManager
     public static void InvokeShootReleased() => OnShootReleased?.Invoke();
     public static void InvokeAimPressed() => OnAimPressed?.Invoke();
     public static void InvokeAimReleased() => OnAimReleased?.Invoke();
-    public static void InvokeBulletSwitch() => OnBulletSwitch?.Invoke();
 
     // Input values
     public static Vector2 MoveInput;

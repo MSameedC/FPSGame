@@ -24,6 +24,7 @@ public abstract class EnemyBase : MonoBehaviour, IMoveable, IDamageable, IKnockb
     [Range(0, 1)][SerializeField] protected float knockbackWeight;
     [Header("Flags")]
     [SerializeField] public bool useGravity = true;
+    [SerializeField] private LayerMask losMask;
 
     #region Enemy Data Variables
 
@@ -60,6 +61,9 @@ public abstract class EnemyBase : MonoBehaviour, IMoveable, IDamageable, IKnockb
     private Vector2 smoothedInput;
     private Vector2 inputVelocity;
     
+    private Vector3 desiredMove;
+    private Vector3 desiredLook;
+    
     public Vector3 lastKnownPlayerPosition { get; private set; }
     
     // Components
@@ -91,12 +95,14 @@ public abstract class EnemyBase : MonoBehaviour, IMoveable, IDamageable, IKnockb
     {
         // Wait one frame
         yield return null;
-        // Set Enemy State
-        SetState(new EnemyChaseState(this));
         // Update Data
         CurrentHealth = enemyData.maxHealth;
         // Event
         OnSpawned?.Invoke();
+
+        yield return new WaitForSeconds(0.5f);
+        // Set Enemy State
+        SetState(new EnemyChaseState(this));
     }
 
     protected virtual void Update()
@@ -119,33 +125,40 @@ public abstract class EnemyBase : MonoBehaviour, IMoveable, IDamageable, IKnockb
     protected virtual void LateUpdate()
     {
         float delta = Time.deltaTime;
-
         if (!cc) return;
         
         // Common state machine update
         currentState?.LateUpdate(delta);
-        
-        // Apply gravity only if enabled
-        if (useGravity)
-        {
-            ApplyGravity(delta);
-        }
-        else
-        {
-            gravityVelocity = 0f; // No gravity for flying enemies
-        }
-        
+        ApplyGravity(delta);
+        ApplyMovementSmooth(delta);
+        // Velocity
         if (moveVelocity.magnitude > 0.01f)
             moveVelocity = Vector3.Lerp(moveVelocity, Vector3.zero, 10f * delta);
-
         if (knockbackVelocity.magnitude > 0.1f)
             knockbackVelocity = Vector3.Slerp(knockbackVelocity, Vector3.zero, 3f * delta);
-
-        // Velocity
+        
         totalVelocity = moveVelocity + knockbackVelocity + Vector3.up * gravityVelocity;
         cc.Move(totalVelocity * delta);
-    } 
+    }
 
+    private void ApplyMovementSmooth(float delta)
+    {
+        // Smooth movement
+        moveVelocity = Vector3.Lerp(moveVelocity,
+            desiredMove * enemyData.moveSpeed,
+            moveSmoothness * delta);
+
+        // Smooth rotation
+        if (desiredLook.sqrMagnitude > 0.01f)
+        {
+            Quaternion targetRot = Quaternion.LookRotation(desiredLook);
+            transform.rotation = Quaternion.Slerp(
+                transform.rotation,
+                targetRot,
+                rotationSpeed * delta
+            );
+        }
+    }
     #endregion
 
     #region State Machine
@@ -183,16 +196,23 @@ public abstract class EnemyBase : MonoBehaviour, IMoveable, IDamageable, IKnockb
 
     private void ApplyGravity(float delta)
     {
-        if (cc.isGrounded && gravityVelocity < 0)
+        if (useGravity)
         {
-            gravityVelocity = GravityData.groundStickForce;
-            return;
-        }
+            if (cc.isGrounded && gravityVelocity < 0)
+            {
+                gravityVelocity = GravityData.groundStickForce;
+                return;
+            }
         
-        float maxFallSpeed = 20;
-        float gravityMultiplier = gravityVelocity < 0 ? GravityData.fallStrength : 1f;
-        gravityVelocity += GravityData.gravity * gravityMultiplier * delta;
-        gravityVelocity = Mathf.Max(gravityVelocity, -maxFallSpeed);
+            float maxFallSpeed = 20;
+            float gravityMultiplier = gravityVelocity < 0 ? GravityData.fallStrength : 1f;
+            gravityVelocity += GravityData.gravity * gravityMultiplier * delta;
+            gravityVelocity = Mathf.Max(gravityVelocity, -maxFallSpeed);
+        }
+        else
+        {
+            gravityVelocity = 0f; 
+        }
     }
 
     // Detection
@@ -212,8 +232,9 @@ public abstract class EnemyBase : MonoBehaviour, IMoveable, IDamageable, IKnockb
         float predictionMultiplier = Mathf.Clamp(distanceToPlayer / 8f, 0.05f, 1f);
         
         // Always predict slightly ahead, even when player is standing still
-        Vector3 baseOffset = transform.forward * 0.5f; // Small forward prediction
-        Vector3 predictOffset = new Vector3(smoothedInput.x, 0, smoothedInput.y) * (predictionStrength * predictionMultiplier) + baseOffset;
+        Vector3 baseOffset = transform.forward * 0.1f; // Small forward prediction
+        Vector3 predictOffset = new Vector3(smoothedInput.x, 0, smoothedInput.y) *
+                                (predictionStrength * predictionMultiplier);
     
         Vector3 predictedPlayerPosition = player.position + predictOffset;
         return (predictedPlayerPosition - transform.position).normalized;
@@ -224,7 +245,7 @@ public abstract class EnemyBase : MonoBehaviour, IMoveable, IDamageable, IKnockb
         return (player.position - transform.position).normalized;
     }
 
-    private Vector3 GetDirectionAwayFromPlayer()
+    public Vector3 GetDirectionAwayFromPlayer()
     {
         return (transform.position - player.position).normalized;
     }
@@ -243,15 +264,18 @@ public abstract class EnemyBase : MonoBehaviour, IMoveable, IDamageable, IKnockb
     {
         if (!player) return false;
 
-        Vector3 directionToPlayer = GetDirectionToPlayer();
-        float distanceToPlayer = GetDistanceToPlayer();
-    
-        // Raycast to check for obstacles (including other enemies)
-        if (Physics.Raycast(transform.position, directionToPlayer, out RaycastHit hit, distanceToPlayer))
+        Vector3 origin = transform.position + Vector3.up * 1.6f;  // eye height
+        Vector3 dir = (player.position - origin).normalized;
+        float dist = Vector3.Distance(origin, player.position);
+
+        // Only raycast against layers that can block sight
+        if (Physics.Raycast(origin, dir, out RaycastHit hit, dist, losMask, QueryTriggerInteraction.Ignore))
         {
-            // If we hit something that's NOT the player, line of sight is blocked
-            return hit.transform == player;
+            // If the FIRST thing hit is player, LOS = true
+            return hit.collider.CompareTag("Player");
         }
+
+        // Nothing hit? = Player is visible
         return true;
     }
     
@@ -274,6 +298,8 @@ public abstract class EnemyBase : MonoBehaviour, IMoveable, IDamageable, IKnockb
     }
 
     // Movement
+    public void SetDesiredMove(Vector3 dir) => desiredMove = dir;
+    public void SetDesiredLook(Vector3 dir) => desiredLook = dir;
     public virtual void MoveTo(Vector3 direction, float delta)
     {
         if (direction.magnitude > 1f)
@@ -283,19 +309,13 @@ public abstract class EnemyBase : MonoBehaviour, IMoveable, IDamageable, IKnockb
         MoveMagnitude = Mathf.InverseLerp(0f, enemyData.moveSpeed, rawSpeed);
     }
 
-    public void LookAt(Vector3 direction, float delta)
+    private void LookAt(Vector3 direction, float delta)
     {
         if (direction.magnitude > 1f)
             direction.Normalize();
         
         Quaternion targetRotation = Quaternion.LookRotation(direction);
         transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, rotationSpeed * delta);
-    }
-    
-    public void Retreat(float delta)
-    {
-        MoveTo(GetDirectionAwayFromPlayer(), delta);
-        LookAt(GetDirectionToPlayer(), delta);
     }
 
     public void Patrol(float delta)
@@ -336,12 +356,6 @@ public abstract class EnemyBase : MonoBehaviour, IMoveable, IDamageable, IKnockb
         {
             patrolTimer = Random.Range(2f, 6f);
         }
-    }
-
-    public void Chase(Vector3 direction, float delta)
-    {
-        MoveTo(direction, delta);
-        LookAt(direction, delta);
     }
     
     public virtual void Stop()

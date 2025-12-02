@@ -614,7 +614,7 @@ Transform:
   m_GameObject: {fileID: 6370030090896497709}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: -0.38268343, z: 0, w: 0.92387956}
-  m_LocalPosition: {x: -0.3, y: -0.17, z: 0.55}
+  m_LocalPosition: {x: -0.3, y: -0.17, z: 0.5}
   m_LocalScale: {x: 0.07, y: 0.07, z: 0.07}
   m_ConstrainProportionsScale: 1
   m_Children: []
@@ -639,7 +639,7 @@ MonoBehaviour:
   m_Position: 0
   m_WorldSpaceSizeMode: 1
   m_WorldSpaceWidth: 350
-  m_WorldSpaceHeight: 120
+  m_WorldSpaceHeight: 130
   m_PivotReferenceSize: 1
   m_Pivot: 0
   m_WorldSpaceCollider: {fileID: 0}
@@ -839,19 +839,7 @@ MonoBehaviour:
     m_ActionId: 2776c80d-3c14-4091-8c56-d04ced07a2b0
     m_ActionName: 'Player/Previous[/Keyboard/1]'
   - m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 3236350477599691739}
-        m_TargetAssemblyTypeName: InputHandler, Assembly-CSharp
-        m_MethodName: SwitchBullet
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
     m_ActionId: b7230bb6-fc9b-4f52-8b25-f5e19cb2c2ba
     m_ActionName: 'Player/Next[/Keyboard/2]'
   - m_PersistentCalls:
@@ -984,21 +972,21 @@ MonoBehaviour:
   wallJumpDecay: 3
   wallMask:
     serializedVersion: 2
-    m_Bits: 8
+    m_Bits: 0
   groundCheckRadius: 0.2
   groundCheckDistance: 0.2
   groundMask:
     serializedVersion: 2
-    m_Bits: 8
+    m_Bits: 0
   groundCheck: {fileID: 3889740076992910510}
   dashRadius: 1
   slamRadius: 5
   enemyLayer:
     serializedVersion: 2
-    m_Bits: 64
+    m_Bits: 0
   bulletLayer:
     serializedVersion: 2
-    m_Bits: 128
+    m_Bits: 0
   dashHitCheck: {fileID: 3845127321869036120}
   slamDamage: 50
   dashDamage: 30

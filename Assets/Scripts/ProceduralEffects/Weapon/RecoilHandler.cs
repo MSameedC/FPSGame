@@ -19,16 +19,10 @@ public class RecoilHandler : MonoBehaviour, IProceduralEffect
     private float snappiness;
 
     private float zRotVelocity;
-    private float zRotCurrent;
-
-    private float zRotSpringStrength;
-    private float zRotDamping;
 
     private float rangeX;
     private float rangeY;
     private float rangeZ;
-
-    private float aimRecoilIntensity;
 
     public void Initialize(ProceduralRuntimeContext ctx)
     {
@@ -40,7 +34,7 @@ public class RecoilHandler : MonoBehaviour, IProceduralEffect
 
     public void Apply(ProceduralRuntimeContext ctx)
     {
-        if (ctx.isShooting) ApplyRecoil(ctx.isAiming);
+        if (ctx.isShooting) ApplyRecoil();
 
         float delta = ctx.deltaTime;
 
@@ -55,39 +49,27 @@ public class RecoilHandler : MonoBehaviour, IProceduralEffect
         targetRot = Quaternion.Slerp(targetRot, Quaternion.identity, lerpSnapRot);
         currentRotOffset = Quaternion.Slerp(currentRotOffset, targetRot, lerpRot);
 
-        float zSpringForce = -zRotSpringStrength * zRotCurrent - zRotDamping * zRotVelocity;
-        zRotVelocity += zSpringForce * delta;
-        zRotCurrent += zRotVelocity * delta;
-
-        Quaternion zRot = Quaternion.Euler(0f, 0f, zRotCurrent);
-
         transform.localPosition = originalPos + currentPosOffset;
-        transform.localRotation = originalRot * currentRotOffset * zRot;
+        transform.localRotation = originalRot * currentRotOffset;
     }
 
-    private void ApplyRecoil(bool aiming)
+    private void ApplyRecoil()
     {
-        float intensity = aiming ? aimRecoilIntensity : recoilIntensity;
-        float zClamp = aiming ? zLimit * 0.5f : zLimit;
-
-        float x = rangeX * intensity;
-        float y = rangeY * intensity;
-        float z = rangeZ * intensity;
+        float x = rangeX * recoilIntensity;
+        float y = rangeY * recoilIntensity;
+        float z = rangeZ * recoilIntensity;
 
         // Backwards kick motion range
-        targetPos.z = Mathf.Clamp(targetPos.z - z, -zClamp, 0f);
+        targetPos.z = Mathf.Clamp(targetPos.z - z, -zLimit, 0f);
 
         // Rotational motion range
-        Quaternion newRot = targetRot * Quaternion.Euler(-x, Random.Range(-y, y), 0f);
+        Quaternion newRot = targetRot * (Quaternion.Euler(-x, Random.Range(-y, y), 0f));
         float currentRot = Quaternion.Angle(Quaternion.identity, newRot);
 
         if (currentRot <= maxRecoilAngle)
             targetRot = newRot;
         else
             targetRot = Quaternion.RotateTowards(Quaternion.identity, newRot, maxRecoilAngle);
-
-        // Final z-Rotation
-        zRotCurrent += -z * intensity;
     }
 
     private void SetConfig(WeaponData data)
@@ -99,17 +81,12 @@ public class RecoilHandler : MonoBehaviour, IProceduralEffect
         }
         
         // initialize data
-        rangeX = data.recoil.recoilX / 10;
-        rangeY = data.recoil.recoilY / 10;
-        rangeZ = data.recoil.recoilZ / 10;
-
-        zRotDamping = data.weapon.swayDamping;
-        zRotSpringStrength = data.weapon.swaySpringStrength;
+        rangeX = data.recoil.recoilX;
+        rangeY = data.recoil.recoilY;
+        rangeZ = data.recoil.recoilZ;
 
         snappiness = data.weapon.recoilSnappiness;
         returnSpeed = data.weapon.recoilReturnSpeed;
-
-        aimRecoilIntensity = data.aim.aimRecoil;
     }
 
     public void ResetEffect()

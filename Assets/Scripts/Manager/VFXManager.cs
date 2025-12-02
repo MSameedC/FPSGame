@@ -63,7 +63,7 @@ public class VFXManager : MonoBehaviour
     
     public void PLayLightWallHit(Vector3 position, Quaternion rotation)
     {
-        PlayVFX(library.wallHitLight, position, rotation, 5);
+        PlayVFX(library.wallHitLight, position, rotation, 3);
     }
     
     public void PLayHeavyWallHit(Vector3 position, Quaternion rotation)
@@ -76,7 +76,7 @@ public class VFXManager : MonoBehaviour
         PlayVFX(library.explosion, position, Quaternion.identity, 5);
     }
     
-    public void PlayMuzzleFlash(Vector3 position, Quaternion rotation) => PlayVFX(library.muzzleFlash, position, rotation, 5);
+    public void PlayMuzzleFlash(Vector3 position, Quaternion rotation) => PlayVFX(library.muzzleFlash, position, rotation, 3);
     
     
     public void ShowTrail(Vector3 start, Vector3 end)

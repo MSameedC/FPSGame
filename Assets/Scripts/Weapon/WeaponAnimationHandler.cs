@@ -19,6 +19,6 @@ public class WeaponAnimationHandler : MonoBehaviour
     private void PlayShootAnimation()
     {
         if (InputManager.IsAiming) return;
-        animator.SetTrigger("Shoot");
+        animator.SetTrigger(AnimationName.Shoot);
     }
 }

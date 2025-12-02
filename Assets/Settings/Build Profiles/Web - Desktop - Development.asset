@@ -18,7 +18,7 @@ MonoBehaviour:
   m_PlatformId: 84a3bb9e7420477f885e98145999eb20
   m_PlatformBuildProfile:
     rid: 8137796270632730624
-  m_OverrideGlobalSceneList: 1
+  m_OverrideGlobalSceneList: 0
   m_Scenes:
   - m_enabled: 1
     m_path: Assets/Scenes/SampleScene.unity
@@ -125,7 +125,7 @@ MonoBehaviour:
     - line: '|   useMacAppStoreValidation: 0'
     - line: '|   macAppStoreCategory: public.app-category.games'
     - line: '|   gpuSkinning: 1'
-    - line: '|   meshDeformation: 2'
+    - line: '|   meshDeformation: 1'
     - line: '|   xboxPIXTextureCapture: 0'
     - line: '|   xboxEnableAvatar: 0'
     - line: '|   xboxEnableKinect: 0'
@@ -213,7 +213,7 @@ MonoBehaviour:
     - line: '|   CreateWallpaper: 0'
     - line: '|   androidSplitApplicationBinary: 0'
     - line: '|   keepLoadedShadersAlive: 0'
-    - line: '|   StripUnusedMeshComponents: 0'
+    - line: '|   StripUnusedMeshComponents: 1'
     - line: '|   strictShaderVariantMatching: 0'
     - line: '|   VertexChannelCompressionMask: 4054'
     - line: '|   iPhoneSdkVersion: 988'
@@ -560,6 +560,9 @@ MonoBehaviour:
     - line: '|     m_Automatic: 1'
     - line: '|   - m_BuildTarget: AndroidPlayer'
     - line: '|     m_APIs: 150000000b000000'
+    - line: '|     m_Automatic: 0'
+    - line: '|   - m_BuildTarget: WebGLSupport'
+    - line: '|     m_APIs: 0b0000001c000000'
     - line: '|     m_Automatic: 0'
     - line: '|   m_BuildTargetVRSettings: []'
     - line: '|   m_DefaultShaderChunkSizeInMB: 16'
@@ -957,11 +960,11 @@ MonoBehaviour:
     - line: '|   captureStartupLogs: {}'
     - line: '|   activeInputHandler: 1'
     - line: '|   windowsGamepadBackendHint: 0'
-    - line: '|   cloudProjectId: 6b3fd318-27f9-4bae-a508-24458feea5a8'
+    - line: '|   cloudProjectId: '
     - line: '|   framebufferDepthMemorylessMode: 0'
     - line: '|   qualitySettingsNames: []'
-    - line: '|   projectName: FPS Game'
-    - line: '|   organizationId: silvercobra2006'
+    - line: '|   projectName: '
+    - line: '|   organizationId: '
     - line: '|   cloudEnabled: 0'
     - line: '|   legacyClampBlendShapeWeights: 0'
     - line: '|   hmiLoadingImage: {instanceID: 0}'
@@ -979,7 +982,7 @@ MonoBehaviour:
     - rid: 8137796270632730624
       type: {class: WebGLPlatformSettings, ns: UnityEditor.WebGL, asm: UnityEditor.WebGL.Extensions}
       data:
-        m_Development: 1
+        m_Development: 0
         m_ConnectProfiler: 0
         m_BuildWithDeepProfilingSupport: 0
         m_AllowDebugging: 0

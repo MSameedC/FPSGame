@@ -73,9 +73,16 @@ public class EnemyVFX : MonoBehaviour
     {
         StartCoroutine(HurtCoroutine());
     }
+
+    private void ResetEffect()
+    {
+        MeshRenderer.material = baseMaterial;
+    }
+    
     private void PerformSpawnEffect()
     {
         VFXManager?.PlaySpawnEffect(transform.position, Quaternion.identity);
+        ResetEffect();
     }
 
     private void RenderHuntMaterial() => isSpotted = true;
@@ -83,7 +90,7 @@ public class EnemyVFX : MonoBehaviour
     
     private IEnumerator HurtCoroutine()
     {
-        float delay = 0.15f;
+        float delay = 0.12f;
         MeshRenderer.material = hurtMaterial;
         yield return new WaitForSeconds(delay);
         MeshRenderer.material = baseMaterial;

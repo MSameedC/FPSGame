@@ -62,7 +62,7 @@ public class WeaponSway : MonoBehaviour, IProceduralEffect
         transform.localRotation = initialRot;
     }
 
-    public void SetConfig(WeaponData data)
+    private void SetConfig(WeaponData data)
     {
         damping = data.weapon.swayDamping;
         springStrength = data.weapon.swaySpringStrength;

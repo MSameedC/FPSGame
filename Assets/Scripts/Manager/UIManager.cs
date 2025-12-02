@@ -3,8 +3,17 @@ using UnityEngine.UIElements;
 
 public class UIManager : MonoBehaviour
 {
-    private UIDocument uiDoc;
-    private VisualElement root;
+    public static UIManager Instance;
+
+    [SerializeField] private UIDocument gameHudDoc;
+    [SerializeField] private UIDocument crosshairDoc;
+    [SerializeField] private UIDocument pauseDoc;
+    [SerializeField] private UIDocument settingsDoc;
+    
+    private VisualElement gameHudRoot;
+    private VisualElement crosshairRoot;
+    private VisualElement pauseRoot;
+    private VisualElement settingsRoot;
 
     private Label scoreLabel;
     private Label waveLabel;
@@ -16,21 +25,24 @@ public class UIManager : MonoBehaviour
 
     private void Awake()
     {
-        uiDoc = GetComponent<UIDocument>();
+        Instance = this;
     }
 
     private void Start()
     {
-        root = uiDoc.rootVisualElement;
-
-        scoreLabel = root.Q<Label>("score-label");
-        waveLabel = root.Q<Label>("wave-label");
+        gameHudRoot = gameHudDoc.rootVisualElement;
+        crosshairRoot = crosshairDoc.rootVisualElement;
+        
+        scoreLabel = gameHudRoot.Q<Label>("score-label");
+        waveLabel = gameHudRoot.Q<Label>("wave-label");
         // Components
         GameManager = GameManager.Instance;
         WaveManager = WaveManager.Instance;
         // Subscribe
         GameManager.OnScoreChanged += UpdateScore;
         WaveManager.OnWaveChanged += UpdateWave;
+        InputManager.OnAimPressed += () => crosshairRoot.style.display = DisplayStyle.None;
+        InputManager.OnAimReleased += () => crosshairRoot.style.display = DisplayStyle.Flex;
         // Initialize
         UpdateScore(0);
         UpdateWave(0);
@@ -50,5 +62,10 @@ public class UIManager : MonoBehaviour
     private void UpdateWave(int currentWave)
     {
         waveLabel.text = currentWave.ToString();
+    }
+
+    public void ShowScreen(string screenName)
+    {
+        
     }
 }

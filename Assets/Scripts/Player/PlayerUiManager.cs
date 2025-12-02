@@ -12,6 +12,10 @@ public class PlayerUiManager : MonoBehaviour
 
     private PlayerData player;
     private VisualElement root;
+    
+    private float currentHealth;
+    private float currentStamina;
+    private float currentHeat;
 
     private void Awake()
     {
@@ -29,10 +33,22 @@ public class PlayerUiManager : MonoBehaviour
         var existingPlayer = PlayerRegistry.Instance.GetLocalPlayer();
         if (existingPlayer != null)
             OnPlayerRegister(existingPlayer);
+        
+        currentHealth = 0;
+        currentStamina = 0;
+        currentHeat = 0;
     }
 
     private void Update()
     {
+        float delta = Time.deltaTime;
+        float lerpRate = 24;
+        
+        // Smoothly transition to next value
+        healthBar.value = Mathf.Lerp(healthBar.value, currentHealth, lerpRate * delta);
+        heatBar.value = Mathf.Lerp(heatBar.value, currentHeat, lerpRate * delta);
+        staminaBar.value = Mathf.Lerp(staminaBar.value, currentStamina, lerpRate * delta);
+        
         // Disable UI on Aim
         root.style.display = InputManager.IsAiming ? DisplayStyle.None : DisplayStyle.Flex;
     }
@@ -73,20 +89,20 @@ public class PlayerUiManager : MonoBehaviour
     {
         healthBar.lowValue = 0;
         healthBar.highValue = max;
-        healthBar.value = current;
+        currentHealth = current;
     }
 
     private void UpdateHeat(float current, float max)
     {
         heatBar.lowValue = 0;
         heatBar.highValue = max;
-        heatBar.value = current;
+        currentHeat = current;
     }
 
     private void UpdateStamina(float current, float max)
     {
         staminaBar.lowValue = 0;
         staminaBar.highValue = max;
-        staminaBar.value = current;
+        currentStamina = current;
     }
 }

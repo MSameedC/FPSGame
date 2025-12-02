@@ -8,6 +8,7 @@ public class WeaponData : ScriptableObject
     [Min(0.01f)]
     public float fireRate;
     public float range;
+    [Space]
     [Min(1)]
     public float heatAddAmount;
     [Min(1)]
@@ -25,9 +26,6 @@ public class WeaponData : ScriptableObject
     [Header("Aim")]
     public AimSettings aim;
 
-    [Header("Audio")]
-    public SoundSettings sound;
-
     [Header("Weapon")]
     public WeaponSettings weapon;
 }
@@ -38,25 +36,14 @@ public struct RecoilSettings
     public float recoilX;
     public float recoilY;
     public float recoilZ;
-    public float kick;
 }
 
 [System.Serializable]
 public struct AimSettings
 {
-    public float aimSens;
     public float aimSway;
-    public float aimSpread;
     public float aimRecoil;
     public float aimReturnSpeed;
-    public float aimRate;
-}
-
-[System.Serializable]
-public struct SoundSettings
-{
-    public AudioClip fire;
-    public AudioClip overheat;
 }
 
 [System.Serializable]
@@ -64,8 +51,6 @@ public struct WeaponSettings
 {
     public float recoilReturnSpeed;
     public float recoilSnappiness;
-    public float aimSwitchPosSpeed;
-    public float aimSwitchRotSpeed;
     public float swaySpringStrength;
     public float swayDamping;
 }

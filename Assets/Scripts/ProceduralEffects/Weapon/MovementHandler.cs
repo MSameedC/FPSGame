@@ -19,8 +19,6 @@ public class MovementHandler : MonoBehaviour, IProceduralEffect
     public void Initialize(ProceduralRuntimeContext ctx)
     {
         initialPos = transform.localPosition;
-
-        SetConfig(ctx.weaponData);
     }
 
     public void Apply(ProceduralRuntimeContext ctx)
@@ -31,14 +29,13 @@ public class MovementHandler : MonoBehaviour, IProceduralEffect
         bool isAiming = ctx.isAiming;
 
         // Final Values
-        float finalAmp = (isAiming ? aimRate : 1) * moveAmplitude;
-        float finalFreq = (isAiming ? aimRate : 1) * moveFrequency;
+        float finalAmp = (isAiming ? 0.05f : 1) * moveAmplitude;
 
         bool active = ctx.isGrounded && !ctx.isShooting && moveFactor > 0.01f;
 
         if (active)
         {
-            float step = Time.time * finalFreq;
+            float step = Time.time * moveFrequency;
 
             float posX = Mathf.Sin(step) * moveX * finalAmp * moveFactor;
             float posY = Mathf.Sin(step * 2f) * moveY * finalAmp * moveFactor;
@@ -51,11 +48,6 @@ public class MovementHandler : MonoBehaviour, IProceduralEffect
         }
 
         transform.localPosition = Vector3.Lerp(transform.localPosition, initialPos + targetOffset, snappiness * delta);
-    }
-
-    public void SetConfig(WeaponData data)
-    {
-        aimRate = data.aim.aimRate;
     }
 
     public void ResetEffect()
