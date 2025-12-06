@@ -1,12 +1,19 @@
 :root {
 }
 
-.text {
+.header {
     -unity-font-style: bold;
     font-size: 40px;
-    -unity-font-definition: resource('FlatSkin/Font/Roboto-Black');
+    -unity-font-definition: url("project://database/Assets/UI/Fonts/squarefont/Square.ttf?fileID=12800000&guid=d6813bba05e24981399916306ef52caf&type=3#Square");
     top: 0;
     right: 0;
+    color: rgb(255, 255, 255);
+}
+
+.sub-header {
+    color: rgb(255, 255, 255);
+    -unity-font-definition: url("project://database/Assets/UI/Fonts/squarefont/Square.ttf?fileID=12800000&guid=d6813bba05e24981399916306ef52caf&type=3#Square");
+    font-size: 24px;
 }
 
 .btn {
@@ -20,21 +27,24 @@
     margin-left: 0;
     color: rgb(255, 255, 255);
     background-color: rgba(0, 0, 0, 0);
-    border-left-color: rgb(255, 255, 255);
-    border-right-color: rgb(255, 255, 255);
-    border-top-color: rgb(255, 255, 255);
-    border-bottom-color: rgb(255, 255, 255);
-    border-top-width: -1px;
-    border-right-width: -1px;
-    border-bottom-width: -1px;
-    border-left-width: -1px;
-    border-top-left-radius: 10px;
-    border-top-right-radius: 10px;
-    border-bottom-right-radius: 10px;
-    border-bottom-left-radius: 10px;
+    border-left-color: rgba(0, 0, 0, 0);
+    border-right-color: rgba(0, 0, 0, 0);
+    border-top-color: rgba(0, 0, 0, 0);
+    border-bottom-color: rgba(0, 0, 0, 0);
 }
 
 .btn:hover {
+    margin-top: 5px;
+    margin-right: 0;
+    margin-bottom: 5px;
+    margin-left: 0;
+    background-color: rgb(255, 255, 255);
+    color: rgb(0, 0, 0);
+    transition-duration: 0.1s;
+    transition-timing-function: ease;
+}
+
+.btn:focus {
     margin-top: 5px;
     margin-right: 0;
     margin-bottom: 5px;

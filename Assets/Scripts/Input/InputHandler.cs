@@ -10,7 +10,6 @@ public class InputHandler : MonoBehaviour
     {
         if (context.started)
         {
-            InputManager.IsShooting = true;
             InputManager.InvokeShootPressed();
         }
         if (context.canceled)
@@ -24,7 +23,6 @@ public class InputHandler : MonoBehaviour
     {
         if (context.started)
         {
-            InputManager.IsAiming = true;
             InputManager.InvokeAimPressed();
         }
         if (context.canceled)
@@ -38,7 +36,6 @@ public class InputHandler : MonoBehaviour
     {
         if (context.started)
         {
-            InputManager.IsSlaming = true;
             InputManager.InvokeSlamPressed();
         }
         if (context.canceled)
@@ -51,7 +48,6 @@ public class InputHandler : MonoBehaviour
     {
         if (context.started)
         {
-            InputManager.IsJumping = true;
             InputManager.InvokeJumpPressed();
         }
         if (context.canceled)
@@ -64,12 +60,19 @@ public class InputHandler : MonoBehaviour
     {
         if (context.started)
         {
-            InputManager.IsDashing = true;
             InputManager.InvokeDashPressed();
         }
         if (context.canceled)
         {
             InputManager.IsDashing = false;
+        }
+    }
+
+    public void Pause(InputAction.CallbackContext context)
+    {
+        if (context.started)
+        {
+            InputManager.InvokePausePressed();
         }
     }
 }

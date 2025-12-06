@@ -1,0 +1,24 @@
+<ui:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" noNamespaceSchemaLocation="../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <Style src="project://database/Assets/UI/Style/MainStyle.uss?fileID=7433441132597879392&amp;guid=979ce301da5858340bceca1384c5bdb2&amp;type=3#MainStyle" />
+    <Style src="project://database/Assets/UI/Style/SettingsStyle.uss?fileID=7433441132597879392&amp;guid=f496f5a295cc9e3aba18afb199dfe94e&amp;type=3#SettingsStyle" />
+    <ui:VisualElement name="Background" style="flex-grow: 1; background-color: rgba(24, 24, 24, 0); justify-content: center; align-items: center; flex-direction: row; display: flex;">
+        <ui:VisualElement name="Options" style="background-color: rgb(20, 20, 20); width: 20%; justify-content: center; align-self: stretch; align-items: stretch;">
+            <ui:Button text="AUDIO" name="audio-btn" selectable="false" focusable="true" double-click-selects-word="false" triple-click-selects-line="false" class="btn text header" />
+            <ui:Button text="VIDEO" name="video-btn" double-click-selects-word="false" triple-click-selects-line="false" selectable="true" class="btn text header" />
+            <ui:Button text="BACK" name="back-btn" double-click-selects-word="false" triple-click-selects-line="false" selectable="true" class="btn text header" />
+        </ui:VisualElement>
+        <ui:VisualElement name="Container" class="data-container" style="background-color: rgba(24, 24, 24, 0.78); justify-content: center; align-self: stretch; flex-grow: 1;">
+            <ui:VisualElement name="Audio" style="flex-grow: 1; display: flex;">
+                <ui:Slider label="MASTER" value="42" high-value="100" name="master-slider" fill="true" focusable="false" class="sub-header base-field" />
+                <ui:Slider label="MUSIC" value="42" high-value="100" name="music-slider" fill="true" focusable="false" class="sub-header base-field" />
+                <ui:Slider label="SFX" value="42" high-value="100" name="sfx-slider" fill="true" focusable="false" class="sub-header base-field" />
+            </ui:VisualElement>
+            <ui:VisualElement name="Video" style="flex-grow: 1; justify-content: flex-start; display: none;">
+                <ui:DropdownField label="RESOLUTION" name="resolution-dropbox" choices="1920x1080,950x540" focusable="false" class="sub-header dropbox-base-field base-field" style="width: auto;" />
+                <ui:Slider label="RENDERING SCALE" value="50" high-value="100" name="rendering-scale-slider" fill="true" direction="Horizontal" focusable="false" class="sub-header dropbox-base-field base-field" />
+                <ui:Toggle label="VSYNC" name="vsync-toggle" focusable="false" class="sub-header toggle dropbox-base-field base-field" />
+                <ui:DropdownField label="QUALITY" name="quality-dropbox" choices="1920x1080,950x540" focusable="false" class="sub-header dropbox-base-field base-field" style="width: auto;" />
+            </ui:VisualElement>
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

@@ -3,6 +3,8 @@ using UnityEngine;
 
 public static class InputManager
 {
+    public static bool IsGamePaused;
+    
     // Events (Private set)
     public static event Action OnShootPressed;
     public static event Action OnShootReleased;
@@ -11,15 +13,47 @@ public static class InputManager
     public static event Action OnSlamPressed;
     public static event Action OnAimPressed;
     public static event Action OnAimReleased;
+    public static event Action OnPausePressed;
     
     // Public invoke methods
-    public static void InvokeDashPressed() => OnDashPressed?.Invoke();
-    public static void InvokeJumpPressed() => OnJumpPressed?.Invoke();
-    public static void InvokeSlamPressed() => OnSlamPressed?.Invoke();
-    public static void InvokeShootPressed() => OnShootPressed?.Invoke();
-    public static void InvokeShootReleased() => OnShootReleased?.Invoke();
-    public static void InvokeAimPressed() => OnAimPressed?.Invoke();
-    public static void InvokeAimReleased() => OnAimReleased?.Invoke();
+    public static void InvokeDashPressed() {
+        if (IsGamePaused) return;
+        OnDashPressed?.Invoke();
+        IsDashing = true;
+    }
+    public static void InvokeJumpPressed() {
+        if (IsGamePaused) return;
+        OnJumpPressed?.Invoke();
+        IsJumping = true;
+    }
+    public static void InvokeSlamPressed() {
+        if (IsGamePaused) return;
+        OnSlamPressed?.Invoke();
+        IsSlaming = true;
+    }
+    public static void InvokeShootPressed() {
+        if (IsGamePaused) return;
+        OnShootPressed?.Invoke();
+        IsShooting  = true;
+    }
+    public static void InvokeShootReleased() {
+        if (IsGamePaused) return;
+        OnShootReleased?.Invoke();
+        IsShooting = false;
+    }
+    public static void InvokeAimPressed() {
+        if (IsGamePaused) return;
+        OnAimPressed?.Invoke();
+        IsAiming = true;
+    }
+    public static void InvokeAimReleased() {
+        if (IsGamePaused) return;
+        OnAimReleased?.Invoke();
+        IsAiming = false;
+    }
+    public static void InvokePausePressed() {
+        OnPausePressed?.Invoke();
+    }
 
     // Input values
     public static Vector2 MoveInput;

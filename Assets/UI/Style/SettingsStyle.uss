@@ -1,0 +1,32 @@
+:root {
+}
+
+.data-container {
+    padding-top: 50px;
+    padding-bottom: 50px;
+    color: rgba(27, 27, 27, 0);
+    padding-left: 25px;
+    padding-right: 25px;
+}
+
+.toggle {
+}
+
+.toggle .unity-toggle {
+}
+
+.base-field {
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.base-field .unity-base-field {
+}
+
+.base-field .unity-base-field__label {
+    width: 600px;
+}
+
+.dropbox-base-field .unity-base-field__input {
+    width: 600px;
+}

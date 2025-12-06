@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using UnityEngine;
 using Random = UnityEngine.Random;
@@ -11,9 +10,10 @@ public class AudioManager : MonoBehaviour
     [SerializeField] private AudioLibrary library;
     public AudioLibrary Library => library;
     
-    private AudioSource musicSource;
-    private AudioSource ambientSource;
-    private AudioSource sfxSource;
+    [Header("Audio Sources")]
+    [SerializeField] private AudioSource musicSource;
+    [SerializeField] private AudioSource ambientSource;
+    [SerializeField] private AudioSource sfxSource;
     
     private void Awake()
     {
@@ -29,10 +29,6 @@ public class AudioManager : MonoBehaviour
 
     private void InitializeAudioSources()
     {
-        musicSource = gameObject.AddComponent<AudioSource>();
-        ambientSource = gameObject.AddComponent<AudioSource>();
-        sfxSource = gameObject.AddComponent<AudioSource>();
-        
         // Configure sources
         musicSource.loop = true;
         ambientSource.loop = true;
@@ -40,8 +36,6 @@ public class AudioManager : MonoBehaviour
         // Start ambient music
         PlayAmbient();
     }
-    
-    // === PUBLIC INTERFACE ===
     
     // One-shot sounds (for player, enemies, UI)
     public void PlaySFX(AudioClip clip, Vector3 pos, Quaternion rot, float volume = 1f, float pitchMin = 1f, float pitchMax = 1f)
@@ -66,8 +60,6 @@ public class AudioManager : MonoBehaviour
     public AudioClip GetRandomClip(AudioClip[] clips) => clips.Length > 0 ? clips[Random.Range(0, clips.Length)] : null;
     
     public void PlayExplosionSound(Vector3 pos) => PlaySFX(library.explosionSound, pos, Quaternion.identity);
-    public void PlayBulletFire(Vector3 pos) => PlaySFX(library.explosionSound, pos, Quaternion.identity);
-    
     
     // Music management
     public void PlayBackgroundMusic() => PlayMusic(library.backgroundMusic);
@@ -81,11 +73,6 @@ public class AudioManager : MonoBehaviour
         ambientSource.Play();
     }
     public void StopAmbient() => ambientSource.Stop();
-    
-    // Volume control
-    public void SetMusicVolume(float volume) => musicSource.volume = volume;
-    public void SetSFXVolume(float volume) => sfxSource.volume = volume;
-    public void SetAmbientVolume(float volume) => ambientSource.volume = volume;
     
     // Private helpers
     private void PlayMusic(AudioClip clip)

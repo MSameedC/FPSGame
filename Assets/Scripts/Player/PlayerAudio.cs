@@ -11,9 +11,12 @@ public class PlayerAudio : MonoBehaviour
     [SerializeField] private AudioClip slamSound;
     [SerializeField] private AudioClip jumpSound;
     [SerializeField] private AudioClip landSound;
+    [SerializeField] private AudioClip healSound;
+    [SerializeField] private AudioClip hurtSound;
     
     private float stepTimer;
     private PlayerController player;
+    private PlayerHealth health;
     private AudioManager AudioManager;
 
     // ---
@@ -21,6 +24,7 @@ public class PlayerAudio : MonoBehaviour
     private void Awake()
     {
         player = GetComponent<PlayerController>();
+        health = GetComponent<PlayerHealth>();
     }
 
     private void Start()
@@ -30,6 +34,8 @@ public class PlayerAudio : MonoBehaviour
         player.OnJumped += () => PlayOneShot(jumpSound, 1, 1, 1.1f);
         player.OnLanded += () => PlayOneShot(landSound);
         player.OnDash += () => PlayOneShot(dashSound);
+        health.OnHealed += () => PlayOneShot(healSound);
+        health.OnHurt += () => PlayOneShot(hurtSound);
     }
 
     private void Update()

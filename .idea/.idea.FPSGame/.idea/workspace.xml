@@ -78,6 +78,7 @@
   </component>
   <component name="HighlightingSettingsPerFile">
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/1da66a58c1a849198acfc3232a2792db1f7200/46/21dfeb6a/CreateAssetMenuAttribute.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/1da66a58c1a849198acfc3232a2792db1f7200/80/39c9e194/PlayerPrefs.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/1da66a58c1a849198acfc3232a2792db1f7200/9c/c42103bb/GameObject.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/6b323914031049cd952a80e3832d553429c00/7a/929079a6/Physics.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/Scripts/Bullet.cs" root0="FORCE_HIGHLIGHTING" />
@@ -86,6 +87,7 @@
     <setting file="file://$PROJECT_DIR$/Assets/Scripts/Enemy/EnemyBase.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/Scripts/Helpers/ScriptableObject/AudioLibrary.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/Scripts/Helpers/ScriptableObject/WeaponData.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Assets/Scripts/Input/InputHandler.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/Scripts/Input/InputManager.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/Scripts/Interface/IKnockback.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/Scripts/MainMenu.cs" root0="FORCE_HIGHLIGHTING" />
@@ -93,6 +95,7 @@
     <setting file="file://$PROJECT_DIR$/Assets/Scripts/Manager/ProjectileManager.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/Scripts/Manager/UIManager.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/Scripts/Manager/WaveManager.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Assets/Scripts/ManagerParent.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/Scripts/Player/CameraController.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/Scripts/Player/PlayerAudio.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/Scripts/Player/PlayerController.cs" root0="FORCE_HIGHLIGHTING" />
@@ -104,6 +107,8 @@
     <setting file="file://$PROJECT_DIR$/Assets/Scripts/ProceduralEffects/Weapon/ProceduralManager.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/Scripts/ProceduralEffects/Weapon/RecoilHandler.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/Scripts/ProceduralEffects/Weapon/WeaponSway.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Assets/Scripts/SettingsManager.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Assets/Scripts/SettingsUi.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/Scripts/Setup/PlayerRegistry.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/Scripts/StateMachine/Enemy/EnemyAttackState.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/Scripts/StateMachine/Enemy/EnemyChaseState.cs" root0="FORCE_HIGHLIGHTING" />
@@ -336,7 +341,17 @@
       <workItem from="1764620373655" duration="3592000" />
       <workItem from="1764670579402" duration="8962000" />
       <workItem from="1764695198923" duration="3509000" />
-      <workItem from="1764699719657" duration="3220000" />
+      <workItem from="1764699719657" duration="7120000" />
+      <workItem from="1764755236986" duration="3776000" />
+      <workItem from="1764795261672" duration="1075000" />
+      <workItem from="1764796377852" duration="112000" />
+      <workItem from="1764863926746" duration="4490000" />
+      <workItem from="1764876731487" duration="2082000" />
+      <workItem from="1764881493613" duration="1543000" />
+      <workItem from="1764883065139" duration="2053000" />
+      <workItem from="1764885150210" duration="1501000" />
+      <workItem from="1764924938097" duration="24905000" />
+      <workItem from="1765009264700" duration="1279000" />
     </task>
     <servers />
   </component>

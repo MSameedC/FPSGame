@@ -19,8 +19,6 @@ public class WaveManager : MonoBehaviour
     public int EnemiesToSpawn { get; private set; }
 
     // Components
-    private PlayerRegistry PlayerRegistry;
-    private EnemyManager EnemyManager;
     private Transform Player;
 
     // ---
@@ -35,12 +33,33 @@ public class WaveManager : MonoBehaviour
 
     private void Start()
     {
-        PlayerRegistry = PlayerRegistry.Instance;
-        EnemyManager = EnemyManager.Instance;
+        StartCoroutine(GetPlayerDelayed());
+    }
+
+    private IEnumerator GetPlayerDelayed()
+    {
+        yield return null;
         
-        if (!PlayerRegistry) return;
+        if (!PlayerRegistry.Instance) yield break;
         if (!Player)
-            Player = PlayerRegistry.GetLocalPlayer().PlayerObj.transform;
+        {
+            Player = PlayerRegistry.Instance.GetLocalPlayer().PlayerObj.transform;
+
+            if (Player)
+            {
+                Debug.Log("WaveManager has Player! Found by Registry");
+                yield break;
+            }
+            
+            if (!Player)
+            {
+                Player = GameObject.FindGameObjectWithTag("Player").transform;
+                Debug.Log("WaveManager has Player! Found by Tag");
+                yield break;
+            }
+            
+            Debug.LogWarning("Player is null in StartWave!");
+        }
     }
 
     #endregion
@@ -77,7 +96,7 @@ public class WaveManager : MonoBehaviour
     {
         // Show end wave score and kills
         // yield return new WaveEndSequence() { }
-        PlayerRegistry.GetLocalPlayer().GetHealth().Heal(50);
+        PlayerRegistry.Instance.GetLocalPlayer().GetHealth().Heal(50);
         
         yield return new WaitForSeconds(3.75f);
 
@@ -110,7 +129,7 @@ public class WaveManager : MonoBehaviour
         return spawnPos;
     }
 
-    private void SpawnEnemy(Vector3 spawnPos) => EnemyManager.SpawnEnemy(spawnPos);
+    private void SpawnEnemy(Vector3 spawnPos) => EnemyManager.Instance.SpawnEnemy(spawnPos);
 
     #endregion
 }

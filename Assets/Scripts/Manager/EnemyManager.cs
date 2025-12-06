@@ -13,7 +13,6 @@ public class EnemyManager : MonoBehaviour
     public event Action<int> OnEnemyDied;
 
     [SerializeField] private GameObject[] enemyPrefab;
-    [SerializeField] private GameObject bulletPrefab;
     [SerializeField] private LayerMask groundLayer;
 
     private readonly List<EnemyBase> activeEnemies = new();

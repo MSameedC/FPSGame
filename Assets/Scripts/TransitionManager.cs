@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -21,22 +20,24 @@ public class TransitionManager : MonoBehaviour
     private void Start()
     {
         transitionBg = root.Q<VisualElement>("background");
-
+        // transitionBg.style.display = DisplayStyle.None;
         transitionBg.AddToClassList("transitionUp");
     }
 
     public IEnumerator StartLoading()
     {
+        // Fade IN (enter scene)
+        // transitionBg.style.display = DisplayStyle.Flex;
+        yield return null;
         transitionBg.RemoveFromClassList("transitionUp");
-        
-        yield return new WaitForSeconds(1);
+        yield return new WaitForSecondsRealtime(0.5f);
     }
 
     public IEnumerator ExitLoading()
     {
-        transitionBg.RemoveFromClassList("transitionUp");
-        yield return new WaitForSeconds(1);
-        
+        // Fade OUT (exit scene)
         transitionBg.AddToClassList("transitionUp");
+        yield return new WaitForSecondsRealtime(0.5f);
+        // transitionBg.style.display = DisplayStyle.None;
     }
 }

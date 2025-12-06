@@ -18,7 +18,7 @@ public class CameraFOV : MonoBehaviour
 
     private void Start()
     {
-        cam.Lens.FieldOfView = baseFOV;
+        currentFOV = baseFOV;
     }
 
     private void LateUpdate()

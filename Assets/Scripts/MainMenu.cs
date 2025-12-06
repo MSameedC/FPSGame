@@ -1,6 +1,5 @@
 using System.Collections;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using UnityEngine.UIElements;
 
 public class MainMenu : MonoBehaviour
@@ -11,8 +10,6 @@ public class MainMenu : MonoBehaviour
     private Button startBtn;
     private Button settingsBtn;
     private Button quitBtn;
-    
-    private TransitionManager TransitionManager;
 
     private void Awake()
     {
@@ -24,10 +21,8 @@ public class MainMenu : MonoBehaviour
         settingsBtn = root.Q<Button>("settings-btn");
         quitBtn = root.Q<Button>("quit-btn");
     }
-
     private void Start()
     {
-        TransitionManager = TransitionManager.Instance;
         startBtn.clicked += StartGame;
         settingsBtn.clicked += OpenSettings;
         quitBtn.clicked += QuitGame;
@@ -37,16 +32,16 @@ public class MainMenu : MonoBehaviour
     {
         StartCoroutine(StartGameRoutine());
     }
-
     private IEnumerator StartGameRoutine()
     {
-        yield return StartCoroutine(TransitionManager.StartLoading());
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
+        yield return StartCoroutine(TransitionManager.Instance.StartLoading());
+        SceneLoader.Instance.LoadScene("GameScene");
     }
 
     private void OpenSettings()
     {
         // Open Settings
+        SettingsUi.Instance.EnterSettings();
     }
 
     private void QuitGame()

@@ -394,17 +394,6 @@ MonoBehaviour:
   fireMode: 0
   weaponData: {fileID: 11400000, guid: 2a64dc809db8bcc4183414247858ffc1, type: 2}
   muzzlePoint: {fileID: 1855824005957626223}
-  canSwitchTo: 0101
-  bulletData:
-    damage: 0
-    speed: 30
-    kbForce: 40
-    kbRadius: 4
-    damageRadius: 1
-    material: {fileID: 2100000, guid: 0a976ce97c8a963a694705eb26ca24ba, type: 2}
-    hitMask:
-      serializedVersion: 2
-      m_Bits: 4294967295
 --- !u!114 &8238969942672936636
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -455,7 +444,7 @@ AudioSource:
   m_GameObject: {fileID: 6528239016291008470}
   m_Enabled: 1
   serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 0}
+  OutputAudioMixerGroup: {fileID: -2721694314055687372, guid: 4b250eb306acf48bdb126d88fdd457b2, type: 2}
   m_audioClip: {fileID: 0}
   m_Resource: {fileID: 0}
   m_PlayOnAwake: 0
@@ -590,7 +579,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: '::'
   weapon: {fileID: 7649538029574835614}
   muzzlePoint: {fileID: 1855824005957626223}
-  muzzleFlash: {fileID: 8926484042661614526, guid: 7e38617826ded2e44a447d73a2f40269, type: 3}
 --- !u!1 &7881339438545240052
 GameObject:
   m_ObjectHideFlags: 0

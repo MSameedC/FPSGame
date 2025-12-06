@@ -1,8 +1,7 @@
 using System;
-using System.Collections;
 using UnityEngine;
 
-public enum GameState { Menu, Playing, Paused, GameOver }
+public enum GameState { Playing, Paused, GameOver }
 
 public class GameManager : MonoBehaviour
 {
@@ -19,7 +18,7 @@ public class GameManager : MonoBehaviour
 
     private WaveManager WaveManager;
     private EnemyManager EnemyManager;
-    private TransitionManager TransitionManager;
+    private PlayerData playerData;
 
     // ---
 
@@ -35,24 +34,13 @@ public class GameManager : MonoBehaviour
     {
         WaveManager = WaveManager.Instance;
         EnemyManager = EnemyManager.Instance;
-        TransitionManager =  TransitionManager.Instance;
 
         EnemyManager.OnAllEnemiesDead += HandleNextWave;
         EnemyManager.OnEnemyDied += UpdateScore;
         
-        
         // Start Game
-        StartCoroutine(GameStartRoutine());
-    }
-
-    private IEnumerator GameStartRoutine()
-    {
-        yield return StartCoroutine(TransitionManager.ExitLoading());
-        yield return new WaitForSeconds(1);
-        Debug.Log("Game Start!");
-        yield return new WaitForSeconds(1);
         if (startWave)
-            yield return StartCoroutine(WaveManager.StartNextWave());
+            StartCoroutine(WaveManager.StartNextWave());
     }
 
     private void OnDisable()
@@ -71,9 +59,6 @@ public class GameManager : MonoBehaviour
     {
         CurrentState = newState;
         OnStateChanged?.Invoke(newState);
-        
-        // Handle UI transitions
-        UIManager.Instance.ShowScreen(newState.ToString() + "Screen");
     }
 
     private void HandleNextWave()

@@ -1,11 +1,11 @@
 <ui:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" noNamespaceSchemaLocation="../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
     <Style src="project://database/Assets/UI/Style/MainStyle.uss?fileID=7433441132597879392&amp;guid=979ce301da5858340bceca1384c5bdb2&amp;type=3#MainStyle" />
-    <ui:VisualElement name="Background" style="flex-grow: 1; background-color: rgba(24, 24, 24, 0.9); justify-content: center; align-items: center;">
-        <ui:VisualElement name="Buttons" style="flex-grow: 1; justify-content: center; align-self: flex-start; align-items: auto; left: 0; background-color: rgba(0, 0, 0, 0.39); width: 20%; align-content: auto;">
-            <ui:Button text="START" name="start-btn" class="btn text" />
-            <ui:Button text="SETTINGS" name="settings-btn" class="btn text" />
-            <ui:Button text="QUIT" name="quit-btn" class="btn text" />
+    <ui:VisualElement name="Background" style="flex-grow: 1; background-color: rgb(24, 24, 24); justify-content: center; align-items: center;">
+        <ui:VisualElement name="Buttons" style="flex-grow: 1; justify-content: center; align-self: flex-start; align-items: auto; left: 0; background-color: rgb(20, 20, 20); width: 20%; align-content: auto;">
+            <ui:Button text="START" name="start-btn" class="btn text header" />
+            <ui:Button text="SETTINGS" name="settings-btn" class="btn text header" />
+            <ui:Button text="QUIT" name="quit-btn" class="btn text header" />
         </ui:VisualElement>
-        <ui:Label text="MEGADEATH" name="game-title" class="text" style="position: absolute; color: rgb(255, 255, 255); font-size: 60px; right: 50px;" />
+        <ui:Label text="MEGADEATH" name="game-title" class="text header" style="position: absolute; color: rgb(255, 255, 255); font-size: 60px; right: 50px;" />
     </ui:VisualElement>
 </ui:UXML>

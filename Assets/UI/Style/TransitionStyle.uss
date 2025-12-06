@@ -6,6 +6,12 @@
     transition-duration: 1s;
 }
 
+.transitionLeft {
+    translate: -100% 0%;
+    transition-duration: 1s;
+    display: none;
+}
+
 .transitionDefault {
     transition-duration: 0.1s;
 }
